@@ -1,4 +1,4 @@
-name: scrolling_clean_calendar
+name: scrollable_clean_calendar
 description: A clean widget calendar with vertical scroll
 version: 0.0.1
 author:
@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   intl: ^0.16.1
+  vertical_calendar: ^1.0.1+6
 
 dev_dependencies:
   flutter_test:

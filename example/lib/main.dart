@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scrolling_clean_calendar/scrolling_clean_calendar.dart';
+import 'package:scrollable_clean_calendar/scrollable_clean_calendar.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,16 +10,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Scrollable clean calendar',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: Text('ScrollingCleanCalendar'),
+          title: Text('ScrollableCleanCalendar'),
         ),
-        body: ScrollingCleanCalendar(
+        body: ScrollableCleanCalendar(
           onRangeSelected: (firstDate, secondDate) {
             print('date 1 $firstDate');
             print('date 2 $secondDate');

@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "scrolling_clean_calendar",
+            "name": "scrollable_clean_calendar",
             "request": "launch",
             "type": "dart"
         }

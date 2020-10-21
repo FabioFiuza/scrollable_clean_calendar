@@ -1,10 +1,11 @@
-library scrolling_clean_calendar;
+library scrollable_clean_calendar;
 
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:scrolling_clean_calendar/to/month.dart';
-import 'package:scrolling_clean_calendar/utils/date_utils.dart';
+import 'package:scrollable_clean_calendar/src/clean_calendar_controller.dart';
+import 'package:vertical_calendar/utils/date_models.dart';
+import 'package:vertical_calendar/utils/date_utils.dart';
 
 extension StringExtension on String {
   String capitalize() {
@@ -12,8 +13,8 @@ extension StringExtension on String {
   }
 }
 
-class ScrollingCleanCalendar extends StatefulWidget {
-  ScrollingCleanCalendar({
+class ScrollableCleanCalendar extends StatefulWidget {
+  ScrollableCleanCalendar({
     Key key,
     this.locale = 'en',
     @required this.minDate,
@@ -50,10 +51,13 @@ class ScrollingCleanCalendar extends StatefulWidget {
   final Color rangeSelectedDateColor;
 
   @override
-  _ScrollingCleanCalendarState createState() => _ScrollingCleanCalendarState();
+  _ScrollableCleanCalendarState createState() =>
+      _ScrollableCleanCalendarState();
 }
 
-class _ScrollingCleanCalendarState extends State<ScrollingCleanCalendar> {
+class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
+  final _cleanCalendarController = CleanCalendarController();
+
   List<Month> months;
   DateTime rangeMinDate;
   DateTime rangeMaxDate;
@@ -82,6 +86,7 @@ class _ScrollingCleanCalendarState extends State<ScrollingCleanCalendar> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 12.0),
                 child: Table(
+                  key: ValueKey('Calendar$index'),
                   children: [
                     _buildDayWeeksRow(context),
                     ...month.weeks.map(
@@ -208,7 +213,9 @@ class _ScrollingCleanCalendarState extends State<ScrollingCleanCalendar> {
                 TableCell(
                   child: Center(
                     child: Text(
-                      DateUtils.getDaysOfWeek(widget.locale)[i].capitalize(),
+                      _cleanCalendarController
+                          .getDaysOfWeek(widget.locale)[i]
+                          .capitalize(),
                       style: widget.dayWeekLabelStyle ??
                           Theme.of(context).textTheme.bodyText1.copyWith(
                                 color: Colors.grey[300],
