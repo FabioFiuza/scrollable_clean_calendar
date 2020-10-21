@@ -20,7 +20,11 @@ class MyApp extends StatelessWidget {
           title: Text('ScrollingCleanCalendar'),
         ),
         body: ScrollingCleanCalendar(
-          locale: 'pt', //default is en
+          onRangeSelected: (firstDate, secondDate) {
+            print('date 1 $firstDate');
+            print('date 2 $secondDate');
+          },
+          locale: 'en', //default is en
           minDate: DateTime.now(),
           maxDate: DateTime.now().add(
             Duration(days: 365),

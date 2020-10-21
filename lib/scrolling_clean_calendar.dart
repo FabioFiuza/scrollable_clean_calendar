@@ -18,22 +18,36 @@ class ScrollingCleanCalendar extends StatefulWidget {
     this.locale = 'en',
     @required this.minDate,
     @required this.maxDate,
+    @required this.onRangeSelected,
     this.showDaysWeeks = true,
     this.monthLabelStyle,
     this.dayLabelStyle,
     this.dayWeekLabelStyle,
+    this.selectedDateColor,
+    this.rangeSelectedDateColor,
+    this.selectDateRadius = 15,
   })  : assert(minDate != null),
         assert(maxDate != null),
         assert(showDaysWeeks != null),
+        assert(onRangeSelected != null),
+        assert(selectDateRadius != null),
         super(key: key);
 
   final String locale;
   final bool showDaysWeeks;
   final DateTime minDate;
   final DateTime maxDate;
+
+  final double selectDateRadius;
+
+  final RangeDate onRangeSelected;
+  final TextStyleFunction dayLabelStyle;
+
+  ///Styles
   final TextStyle monthLabelStyle;
-  final TextStyle dayLabelStyle;
   final TextStyle dayWeekLabelStyle;
+  final Color selectedDateColor;
+  final Color rangeSelectedDateColor;
 
   @override
   _ScrollingCleanCalendarState createState() => _ScrollingCleanCalendarState();
@@ -41,6 +55,8 @@ class ScrollingCleanCalendar extends StatefulWidget {
 
 class _ScrollingCleanCalendarState extends State<ScrollingCleanCalendar> {
   List<Month> months;
+  DateTime rangeMinDate;
+  DateTime rangeMaxDate;
 
   @override
   void initState() {
@@ -52,6 +68,8 @@ class _ScrollingCleanCalendarState extends State<ScrollingCleanCalendar> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      cacheExtent:
+          (MediaQuery.of(context).size.width / DateTime.daysPerWeek) * 6,
       itemCount: months.length,
       itemBuilder: (context, index) {
         final month = months[index];
@@ -69,7 +87,6 @@ class _ScrollingCleanCalendarState extends State<ScrollingCleanCalendar> {
                     ...month.weeks.map(
                       (Week week) {
                         DateTime firstDay = week.firstDay;
-                        bool rangeFeatureEnabled = false;
 
                         return _buildDaysRow(week, firstDay, context);
                       },
@@ -98,19 +115,50 @@ class _ScrollingCleanCalendarState extends State<ScrollingCleanCalendar> {
               day.isAfter(widget.maxDate)) {
             return SizedBox.shrink();
           } else {
+            bool rangeFeatureEnabled = rangeMinDate != null;
+
+            bool isSelected = false;
+
+            if (rangeFeatureEnabled) {
+              if (rangeMinDate != null && rangeMaxDate != null) {
+                isSelected = day.isSameDayOrAfter(rangeMinDate) &&
+                    day.isSameDayOrBefore(rangeMaxDate);
+              } else {
+                isSelected = day.isAtSameMomentAs(rangeMinDate);
+              }
+            }
             return TableCell(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8.0,
+              child: GestureDetector(
+                onTap: () {
+                  _onDayClick(day);
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.horizontal(
+                      left: Radius.circular(
+                        _getRadiusRangeMinDate(isSelected, day),
+                      ),
+                      right: Radius.circular(
+                        _getRadiusRangeMaxDate(isSelected, day),
+                      ),
+                    ),
+                    color: _getBackgroundColor(isSelected, day),
                   ),
-                  child: Text(
-                    DateFormat('d', widget.locale).format(day),
-                    style: widget.dayLabelStyle ??
-                        Theme.of(context)
-                            .textTheme
-                            .bodyText2
-                            .copyWith(color: Colors.black),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8.0,
+                      ),
+                      child: Text(
+                        DateFormat('d', widget.locale).format(day),
+                        style: widget.dayLabelStyle != null
+                            ? widget.dayLabelStyle(isSelected)
+                            : Theme.of(context).textTheme.bodyText2.copyWith(
+                                  color:
+                                      isSelected ? Colors.white : Colors.black,
+                                ),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -120,6 +168,36 @@ class _ScrollingCleanCalendarState extends State<ScrollingCleanCalendar> {
         growable: false,
       ),
     );
+  }
+
+  double _getRadiusRangeMinDate(bool isSelected, DateTime day) {
+    if (isSelected) {
+      if (day.compareTo(rangeMinDate) == 0) {
+        return widget.selectDateRadius;
+      }
+    }
+    return 0;
+  }
+
+  double _getRadiusRangeMaxDate(bool isSelected, DateTime day) {
+    if (isSelected) {
+      if (rangeMaxDate != null && day.compareTo(rangeMaxDate) == 0) {
+        return widget.selectDateRadius;
+      }
+    }
+    return 0;
+  }
+
+  Color _getBackgroundColor(bool isSelected, DateTime day) {
+    if (isSelected) {
+      if (day.compareTo(rangeMinDate) == 0 ||
+          (rangeMaxDate != null && day.compareTo(rangeMaxDate) == 0)) {
+        return widget.selectedDateColor ?? Colors.indigo;
+      } else {
+        return widget.rangeSelectedDateColor ?? Colors.blue;
+      }
+    }
+    return Colors.transparent;
   }
 
   TableRow _buildDayWeeksRow(BuildContext context) {
@@ -162,4 +240,27 @@ class _ScrollingCleanCalendarState extends State<ScrollingCleanCalendar> {
       ],
     );
   }
+
+  void _onDayClick(DateTime date) {
+    if (rangeMinDate == null || rangeMaxDate != null) {
+      setState(() {
+        rangeMinDate = date;
+        rangeMaxDate = null;
+      });
+    } else if (date.isBefore(rangeMinDate)) {
+      setState(() {
+        rangeMaxDate = rangeMinDate;
+        rangeMinDate = date;
+      });
+    } else if (date.isAfter(rangeMinDate)) {
+      setState(() {
+        rangeMaxDate = date;
+      });
+    }
+
+    widget.onRangeSelected(rangeMinDate, rangeMaxDate);
+  }
 }
+
+typedef RangeDate = Function(DateTime minDate, DateTime maxDate);
+typedef TextStyleFunction = Function(bool isSelected);
