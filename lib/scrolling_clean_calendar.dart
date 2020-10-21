@@ -21,7 +21,7 @@ class _CleanScrollCalendarState extends State<CleanScrollCalendar> {
   @override
   Widget build(BuildContext context) {
     final dayWeekPtbr = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-    final dayWeekEn = ['Mon', 'Sun', 'Tue', 'Web', 'Thu', 'Fri', 'Sat'];
+    final dayWeekEn = ['Sun', 'Mon', 'Tue', 'Web', 'Thu', 'Fri', 'Sat'];
 
     final today = DateTime.now();
 

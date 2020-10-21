@@ -84,8 +84,6 @@ class DateUtils {
       ];
 
   static bool isLeapYear(int year) {
-    bool leapYear = false;
-
     bool leap = ((year % 100 == 0) && (year % 400 != 0));
     if (leap == true) {
       return false;
@@ -93,22 +91,13 @@ class DateUtils {
       return true;
     }
 
-    return leapYear;
+    return false;
   }
 }
 
 extension DateUtilsExtensions on DateTime {
   bool get isLeapYear {
-    bool leapYear = false;
-
-    bool leap = ((year % 100 == 0) && (year % 400 != 0));
-    if (leap == true) {
-      return false;
-    } else if (year % 4 == 0) {
-      return true;
-    }
-
-    return leapYear;
+    return DateUtils.isLeapYear(year);
   }
 
   int get daysInMonth => DateUtils.daysPerMonth(year)[month - 1];
