@@ -21,8 +21,11 @@ class MyApp extends StatelessWidget {
         ),
         body: ScrollableCleanCalendar(
           onRangeSelected: (firstDate, secondDate) {
-            print('date 1 $firstDate');
-            print('date 2 $secondDate');
+            print('onRangeSelected first $firstDate');
+            print('onRangeSelected second $secondDate');
+          },
+          onTapDate: (date) {
+            print('onTap $date');
           },
           locale: 'en', //default is en
           minDate: DateTime.now(),

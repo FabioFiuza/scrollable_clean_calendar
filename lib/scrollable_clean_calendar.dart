@@ -13,13 +13,17 @@ extension StringExtension on String {
   }
 }
 
+typedef RangeDate = Function(DateTime minDate, DateTime maxDate);
+typedef SelectDate = Function(DateTime date);
+typedef TextStyleFunction = Function(bool isSelected);
+
 class ScrollableCleanCalendar extends StatefulWidget {
   ScrollableCleanCalendar({
     Key key,
     this.locale = 'en',
     @required this.minDate,
     @required this.maxDate,
-    @required this.onRangeSelected,
+    this.onRangeSelected,
     this.showDaysWeeks = true,
     this.monthLabelStyle,
     this.dayLabelStyle,
@@ -27,10 +31,10 @@ class ScrollableCleanCalendar extends StatefulWidget {
     this.selectedDateColor,
     this.rangeSelectedDateColor,
     this.selectDateRadius = 15,
+    this.onTapDate,
   })  : assert(minDate != null),
         assert(maxDate != null),
         assert(showDaysWeeks != null),
-        assert(onRangeSelected != null),
         assert(selectDateRadius != null),
         super(key: key);
 
@@ -43,6 +47,7 @@ class ScrollableCleanCalendar extends StatefulWidget {
 
   final RangeDate onRangeSelected;
   final TextStyleFunction dayLabelStyle;
+  final SelectDate onTapDate;
 
   ///Styles
   final TextStyle monthLabelStyle;
@@ -179,7 +184,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
 
   double _getRadiusRangeMinDate(bool isSelected, DateTime day) {
     if (isSelected) {
-      if (day.compareTo(rangeMinDate) == 0) {
+      if (day.compareTo(rangeMinDate) == 0 && rangeMaxDate != null) {
         return widget.selectDateRadius;
       }
     }
@@ -270,9 +275,12 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
       });
     }
 
-    widget.onRangeSelected(rangeMinDate, rangeMaxDate);
+    if (widget.onTapDate != null) {
+      widget.onTapDate(date);
+    }
+
+    if (widget.onRangeSelected != null) {
+      widget.onRangeSelected(rangeMinDate, rangeMaxDate);
+    }
   }
 }
-
-typedef RangeDate = Function(DateTime minDate, DateTime maxDate);
-typedef TextStyleFunction = Function(bool isSelected);
