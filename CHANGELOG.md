@@ -1,3 +1,6 @@
-## [0.0.1] - TODO: Add release date.
+## [0.1.0] - 2020-10-21
 
-* TODO: Describe initial release.
+- Added calendar full page with a scroll in the vertical.
+- Added a select a range date with special colors.
+- Added capture of the date selected
+- Change calendar with Locale
