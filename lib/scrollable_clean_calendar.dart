@@ -133,6 +133,8 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
               }
             }
             return TableCell(
+              key:
+                  ValueKey(DateFormat('dd-MM-yyyy', widget.locale).format(day)),
               child: GestureDetector(
                 onTap: () {
                   _onDayClick(day);
@@ -226,7 +228,10 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
                 ),
             ],
           )
-        : SizedBox.shrink();
+        : TableRow(children: [
+            for (var i = 0; i < DateTime.daysPerWeek; i++)
+              TableCell(child: SizedBox.shrink())
+          ]);
   }
 
   Widget _buildMonthLabelRow(Month month, BuildContext context) {
