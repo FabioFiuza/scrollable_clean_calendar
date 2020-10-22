@@ -1,4 +1,4 @@
-# Scrollable clean Calendar
+# Scrollable clean calendar
 
 A clean widget calendar with vertical scroll, locale, and range selection date.
 
