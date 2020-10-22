@@ -12,16 +12,14 @@ void main() {
     DateTime maxDate,
     bool showDayWeeks,
     RangeDate onRangeSelected,
+    SelectDate onTapDate,
   }) {
     return MaterialApp(
       home: Scaffold(
         body: SafeArea(
           child: ScrollableCleanCalendar(
-            onRangeSelected: onRangeSelected ??
-                (firstDate, secondDate) {
-                  print('date 1 $firstDate');
-                  print('date 2 $secondDate');
-                },
+            onTapDate: onTapDate ?? (date) {},
+            onRangeSelected: onRangeSelected ?? (firstDate, secondDate) {},
             locale: locale ?? 'en', //default is en
             minDate: minDate ?? firstDateYear,
             showDaysWeeks: showDayWeeks ?? true,
@@ -81,6 +79,17 @@ void main() {
 
     await tester.tap(find.byKey(ValueKey('01-01-2020')));
     await tester.tap(find.byKey(ValueKey('03-03-2020')));
+  });
+
+  testWidgets('When click on a date onTapDate should return this date',
+      (WidgetTester tester) async {
+    final dateFormat = DateFormat('dd-MM-yyyy');
+
+    await tester.pumpWidget(buildScrollableCleanCalendar(onTapDate: (date) {
+      expect(dateFormat.format(date), '02-03-2020');
+    }));
+
+    await tester.tap(find.byKey(ValueKey('02-03-2020')));
   });
 
   testWidgets(
