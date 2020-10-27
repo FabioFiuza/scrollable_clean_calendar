@@ -26,4 +26,23 @@ class CleanCalendarController {
 
     return daysOfWeek;
   }
+
+  List<int> dayOfWeek() {
+    var today = DateTime.now();
+
+    while (today.weekday != startWeekDay) {
+      today = today.subtract(Duration(days: 1));
+    }
+    final dateFormat = DateFormat(DateFormat.NUM_MONTH_WEEKDAY_DAY);
+    final daysOfWeek = [
+      today.weekday,
+      today.add(Duration(days: 1)).weekday,
+      today.add(Duration(days: 2)).weekday,
+      today.add(Duration(days: 3)).weekday,
+      today.add(Duration(days: 4)).weekday,
+      today.add(Duration(days: 5)).weekday,
+      today.add(Duration(days: 6)).weekday
+    ];
+    return daysOfWeek;
+  }
 }
