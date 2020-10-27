@@ -13,6 +13,7 @@ void main() {
     bool showDayWeeks,
     RangeDate onRangeSelected,
     SelectDate onTapDate,
+    int startWeekDay,
   }) {
     return MaterialApp(
       home: Scaffold(
@@ -27,6 +28,7 @@ void main() {
                 firstDateYear.add(
                   Duration(days: 365),
                 ),
+            startWeekDay: startWeekDay ?? DateTime.sunday,
           ),
         ),
       ),
@@ -107,5 +109,28 @@ void main() {
     await tester.pumpWidget(buildScrollableCleanCalendar(locale: 'pt'));
     expect(find.text('Janeiro 2020'), findsOneWidget);
     expect(find.text('Fevereiro 2020'), findsOneWidget);
+  });
+
+  testWidgets('Should start on Monday', (WidgetTester tester) async {
+    await tester.pumpWidget(buildScrollableCleanCalendar(
+      locale: 'pt',
+      startWeekDay: DateTime.monday,
+    ));
+    var byKey = tester.firstWidget(find.byKey(ValueKey('WeekLabel0'))) as Text;
+    expect(byKey.data, "Seg");
+
+    byKey = tester.firstWidget(find.byKey(ValueKey('WeekLabel6'))) as Text;
+    expect(byKey.data, "Dom");
+  });
+
+  testWidgets('Should start on Sunday', (WidgetTester tester) async {
+    await tester.pumpWidget(buildScrollableCleanCalendar(
+      locale: 'pt',
+    ));
+    var byKey = tester.firstWidget(find.byKey(ValueKey('WeekLabel0'))) as Text;
+    expect(byKey.data, "Dom");
+
+    byKey = tester.firstWidget(find.byKey(ValueKey('WeekLabel6'))) as Text;
+    expect(byKey.data, "Sáb");
   });
 }

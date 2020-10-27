@@ -32,6 +32,7 @@ class ScrollableCleanCalendar extends StatefulWidget {
     this.rangeSelectedDateColor,
     this.selectDateRadius = 15,
     this.onTapDate,
+    this.startWeekDay = DateTime.sunday,
   })  : assert(minDate != null),
         assert(maxDate != null),
         assert(showDaysWeeks != null),
@@ -42,6 +43,7 @@ class ScrollableCleanCalendar extends StatefulWidget {
   final bool showDaysWeeks;
   final DateTime minDate;
   final DateTime maxDate;
+  final int startWeekDay;
 
   final double selectDateRadius;
 
@@ -61,7 +63,7 @@ class ScrollableCleanCalendar extends StatefulWidget {
 }
 
 class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
-  final _cleanCalendarController = CleanCalendarController();
+  CleanCalendarController _cleanCalendarController;
 
   List<Month> months;
   DateTime rangeMinDate;
@@ -71,6 +73,8 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
   void initState() {
     initializeDateFormatting();
     months = DateUtils.extractWeeks(widget.minDate, widget.maxDate);
+    _cleanCalendarController =
+        CleanCalendarController(startWeekDay: widget.startWeekDay);
     super.initState();
   }
 
@@ -223,6 +227,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
                       _cleanCalendarController
                           .getDaysOfWeek(widget.locale)[i]
                           .capitalize(),
+                      key: ValueKey("WeekLabel$i"),
                       style: widget.dayWeekLabelStyle ??
                           Theme.of(context).textTheme.bodyText1.copyWith(
                                 color: Colors.grey[300],
