@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:scrollable_clean_calendar/src/clean_calendar_controller.dart';
+import 'package:scrollable_clean_calendar/src/week_helper.dart';
 import 'package:vertical_calendar/utils/date_models.dart';
-import 'package:vertical_calendar/utils/date_utils.dart';
 
 extension StringExtension on String {
   String capitalize() {
@@ -32,7 +32,7 @@ class ScrollableCleanCalendar extends StatefulWidget {
     this.rangeSelectedDateColor,
     this.selectDateRadius = 15,
     this.onTapDate,
-    this.startWeekDay = DateTime.sunday,
+    this.startWeekDay = DateTime.monday,
   })  : assert(minDate != null),
         assert(maxDate != null),
         assert(showDaysWeeks != null),
@@ -43,6 +43,9 @@ class ScrollableCleanCalendar extends StatefulWidget {
   final bool showDaysWeeks;
   final DateTime minDate;
   final DateTime maxDate;
+
+  /// Esse parametro sera habilitado em futuras versoes
+  @deprecated
   final int startWeekDay;
 
   final double selectDateRadius;
@@ -68,11 +71,17 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
   List<Month> months;
   DateTime rangeMinDate;
   DateTime rangeMaxDate;
+  DateTime _minDate;
+  DateTime _maxDate;
 
   @override
   void initState() {
     initializeDateFormatting();
-    months = DateUtils.extractWeeks(widget.minDate, widget.maxDate);
+    _minDate =
+        DateTime(widget.minDate.year, widget.minDate.month, widget.minDate.day);
+    _maxDate = DateTime(widget.maxDate.year, widget.maxDate.month,
+        widget.maxDate.day, 23, 59, 00);
+    months = WeekHelper.extractWeeks(_minDate, _maxDate, widget.startWeekDay);
     _cleanCalendarController =
         CleanCalendarController(startWeekDay: widget.startWeekDay);
     super.initState();
@@ -116,17 +125,21 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
   }
 
   TableRow _buildDaysRow(Week week, DateTime firstDay, BuildContext context) {
+    // _cleanCalendarController.dayOfWeek()
     return TableRow(
       children: List<Widget>.generate(
         DateTime.daysPerWeek,
         (int position) {
-          DateTime day = DateTime(week.firstDay.year, week.firstDay.month,
-              firstDay.day + (position - (firstDay.weekday - 1)));
+          DateTime day = DateTime(
+              week.firstDay.year,
+              week.firstDay.month,
+              firstDay.day +
+                  (position - (firstDay.weekday - widget.startWeekDay)));
 
-          if ((position + 1) < week.firstDay.weekday ||
-              (position + 1) > week.lastDay.weekday ||
-              day.isBefore(widget.minDate) ||
-              day.isAfter(widget.maxDate)) {
+          if ((position + widget.startWeekDay) < week.firstDay.weekday ||
+              (position + widget.startWeekDay) > week.lastDay.weekday ||
+              day.isBefore(_minDate) ||
+              day.isAfter(_maxDate)) {
             return SizedBox.shrink();
           } else {
             bool rangeFeatureEnabled = rangeMinDate != null;
