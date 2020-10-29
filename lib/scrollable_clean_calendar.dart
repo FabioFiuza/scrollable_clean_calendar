@@ -43,6 +43,9 @@ class ScrollableCleanCalendar extends StatefulWidget {
   final bool showDaysWeeks;
   final DateTime minDate;
   final DateTime maxDate;
+
+  /// Esse parametro sera habilitado em futuras versoes
+  @deprecated
   final int startWeekDay;
 
   final double selectDateRadius;
