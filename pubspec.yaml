@@ -1,8 +1,8 @@
 name: scrollable_clean_calendar
 description: A clean widget calendar with vertical scroll
 version: 0.1.1
-author:
-homepage:
+author: Fabio Fiuza <fabiomindua@gmail.com>
+homepage: https://github.com/FabioFiuza/scrollable_clean_calendar
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
