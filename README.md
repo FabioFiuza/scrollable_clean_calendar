@@ -28,6 +28,10 @@ Example `locale: 'pt'`
 | rangeSelectedDateColor | false    | Color     | Color range of date selected          |
 | selectDateRadius       | false    | double    | Apply radius when selected two dates  |
 
-[![scrollable calendar](https://i.postimg.cc/KzmYKLnC/Captura-de-Tela-2020-10-21-a-s-21-32-54.png)](https://postimg.cc/Lq0SwJQV)
+## Locale en
 
-[![Captura-de-Tela-2020-10-21-a-s-22-32-58.png](https://i.postimg.cc/W39JTSQ5/Captura-de-Tela-2020-10-21-a-s-22-32-58.png)](https://postimg.cc/zbgfkwDh)
+[![Captura-de-Tela-2020-10-28-a-s-22-03-12.png](https://i.postimg.cc/VkJn9MxV/Captura-de-Tela-2020-10-28-a-s-22-03-12.png)](https://postimg.cc/BjGj48QT)
+
+## Locale pt
+
+[![Captura-de-Tela-2020-10-28-a-s-21-40-18.png](https://i.postimg.cc/nzjP6C9R/Captura-de-Tela-2020-10-28-a-s-21-40-18.png)](https://postimg.cc/G8RKD3QG)
