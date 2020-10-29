@@ -28,7 +28,7 @@ void main() {
                 firstDateYear.add(
                   Duration(days: 365),
                 ),
-            startWeekDay: startWeekDay ?? DateTime.sunday,
+            startWeekDay: startWeekDay ?? DateTime.monday,
           ),
         ),
       ),
@@ -126,6 +126,7 @@ void main() {
   testWidgets('Should start on Sunday', (WidgetTester tester) async {
     await tester.pumpWidget(buildScrollableCleanCalendar(
       locale: 'pt',
+      startWeekDay: DateTime.sunday,
     ));
     var byKey = tester.firstWidget(find.byKey(ValueKey('WeekLabel0'))) as Text;
     expect(byKey.data, "Dom");

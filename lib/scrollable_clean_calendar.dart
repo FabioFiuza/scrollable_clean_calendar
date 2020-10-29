@@ -154,6 +154,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
                 isSelected = day.isAtSameMomentAs(rangeMinDate);
               }
             }
+
             return TableCell(
               key:
                   ValueKey(DateFormat('dd-MM-yyyy', widget.locale).format(day)),
