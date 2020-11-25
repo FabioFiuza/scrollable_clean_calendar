@@ -32,6 +32,7 @@ class MyApp extends StatelessWidget {
           maxDate: DateTime.now().add(
             Duration(days: 365),
           ),
+          renderPostAndPreviousMonthDates: true,
         ),
       ),
     );

@@ -14,6 +14,7 @@ void main() {
     RangeDate onRangeSelected,
     SelectDate onTapDate,
     int startWeekDay,
+    bool renderPostAndPreviousMonthDates,
   }) {
     return MaterialApp(
       home: Scaffold(
@@ -29,6 +30,8 @@ void main() {
                   Duration(days: 365),
                 ),
             startWeekDay: startWeekDay ?? DateTime.monday,
+            renderPostAndPreviousMonthDates:
+                renderPostAndPreviousMonthDates ?? false,
           ),
         ),
       ),
@@ -133,5 +136,25 @@ void main() {
 
     byKey = tester.firstWidget(find.byKey(ValueKey('WeekLabel6'))) as Text;
     expect(byKey.data, "Sáb");
+  });
+
+  testWidgets(
+      'Should show previous and post dates of month when renderPostAndPreviousMonthDates is true',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(buildScrollableCleanCalendar(
+      locale: 'pt',
+      minDate: DateTime(2020, 2, 15),
+      maxDate: DateTime(2020, 5, 15),
+      renderPostAndPreviousMonthDates: true,
+    ));
+
+    var previousDateOfMonth = find.byKey(ValueKey('01-02-2020'));
+    expect(previousDateOfMonth, findsOneWidget);
+
+    await tester.drag(find.byType(ListView), const Offset(0.0, -2000));
+    await tester.pump();
+
+    var postDateOfMonth = find.byKey(ValueKey('20-05-2020'));
+    expect(postDateOfMonth, findsOneWidget);
   });
 }

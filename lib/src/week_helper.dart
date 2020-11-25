@@ -49,6 +49,9 @@ class WeekHelper {
 
       months.add(Month(weeks));
 
+      months.removeWhere(
+          (element) => maxDate.isBefore(element.weeks.first.firstDay));
+
       return months;
     }
   }
