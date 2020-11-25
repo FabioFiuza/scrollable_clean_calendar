@@ -7,6 +7,8 @@ import 'package:scrollable_clean_calendar/src/clean_calendar_controller.dart';
 import 'package:scrollable_clean_calendar/src/week_helper.dart';
 import 'package:vertical_calendar/utils/date_models.dart';
 
+import 'src/week_helper.dart';
+
 extension StringExtension on String {
   String capitalize() {
     return "${this[0].toUpperCase()}${this.substring(1)}";
@@ -32,6 +34,8 @@ class ScrollableCleanCalendar extends StatefulWidget {
     this.rangeSelectedDateColor,
     this.selectDateRadius = 15,
     this.onTapDate,
+    this.renderPostAndPreviousMonthDates = false,
+    this.disabledDateColor,
     this.startWeekDay = DateTime.monday,
   })  : assert(minDate != null),
         assert(maxDate != null),
@@ -41,6 +45,7 @@ class ScrollableCleanCalendar extends StatefulWidget {
 
   final String locale;
   final bool showDaysWeeks;
+  final bool renderPostAndPreviousMonthDates;
   final DateTime minDate;
   final DateTime maxDate;
 
@@ -59,6 +64,7 @@ class ScrollableCleanCalendar extends StatefulWidget {
   final TextStyle dayWeekLabelStyle;
   final Color selectedDateColor;
   final Color rangeSelectedDateColor;
+  final Color disabledDateColor;
 
   @override
   _ScrollableCleanCalendarState createState() =>
@@ -77,13 +83,21 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
   @override
   void initState() {
     initializeDateFormatting();
-    _minDate =
-        DateTime(widget.minDate.year, widget.minDate.month, widget.minDate.day);
-    _maxDate = DateTime(widget.maxDate.year, widget.maxDate.month,
-        widget.maxDate.day, 23, 59, 00);
+
+    final _minDateDay =
+        widget.renderPostAndPreviousMonthDates ? 1 : widget.minDate.day;
+    final _maxDateDay = widget.renderPostAndPreviousMonthDates
+        ? WeekHelper.daysPerMonth(widget.maxDate.year)[widget.maxDate.month - 1]
+        : widget.maxDate.day;
+
+    _minDate = DateTime(widget.minDate.year, widget.minDate.month, _minDateDay);
+    _maxDate = DateTime(
+        widget.maxDate.year, widget.maxDate.month, _maxDateDay, 23, 59, 00);
     months = WeekHelper.extractWeeks(_minDate, _maxDate, widget.startWeekDay);
+
     _cleanCalendarController =
         CleanCalendarController(startWeekDay: widget.startWeekDay);
+
     super.initState();
   }
 
@@ -136,11 +150,37 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
               firstDay.day +
                   (position - (firstDay.weekday - widget.startWeekDay)));
 
+          final dayIsBeforeMinDate =
+              day.isBefore(widget.minDate) && !day.isSameDay(widget.minDate);
+          final dayIsAfterMaxDate =
+              day.isAfter(widget.maxDate) && !day.isSameDay(widget.maxDate);
+
           if ((position + widget.startWeekDay) < week.firstDay.weekday ||
               (position + widget.startWeekDay) > week.lastDay.weekday ||
               day.isBefore(_minDate) ||
               day.isAfter(_maxDate)) {
             return SizedBox.shrink();
+            // return Text('oi');
+          } else if (dayIsBeforeMinDate || dayIsAfterMaxDate) {
+            return TableCell(
+              key:
+                  ValueKey(DateFormat('dd-MM-yyyy', widget.locale).format(day)),
+              child: Container(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8.0,
+                    ),
+                    child: Text(
+                      DateFormat('d', widget.locale).format(day),
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            color: widget.disabledDateColor ?? Colors.grey[400],
+                          ),
+                    ),
+                  ),
+                ),
+              ),
+            );
           } else {
             bool rangeFeatureEnabled = rangeMinDate != null;
 
