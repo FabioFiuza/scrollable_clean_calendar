@@ -15,6 +15,9 @@ void main() {
     SelectDate onTapDate,
     int startWeekDay,
     bool renderPostAndPreviousMonthDates,
+    DateTime initialDateSelected,
+    DateTime endDateSelected,
+    Color selectedDateColor,
   }) {
     return MaterialApp(
       home: Scaffold(
@@ -32,6 +35,9 @@ void main() {
             startWeekDay: startWeekDay ?? DateTime.monday,
             renderPostAndPreviousMonthDates:
                 renderPostAndPreviousMonthDates ?? false,
+            initialDateSelected: initialDateSelected,
+            endDateSelected: endDateSelected,
+            selectedDateColor: selectedDateColor ?? Colors.amber,
           ),
         ),
       ),
@@ -156,5 +162,48 @@ void main() {
 
     var postDateOfMonth = find.byKey(ValueKey('20-05-2020'));
     expect(postDateOfMonth, findsOneWidget);
+  });
+
+  testWidgets(
+      'When the same date is clicked twice it should return it in both dates',
+      (WidgetTester tester) async {
+    final dateFormat = DateFormat('dd-MM-yyyy');
+
+    await tester.pumpWidget(
+        buildScrollableCleanCalendar(onRangeSelected: (firstDate, secondDate) {
+      expect(dateFormat.format(firstDate), '05-01-2020');
+      if (secondDate != null) {
+        expect(dateFormat.format(secondDate), '05-01-2020');
+      }
+    }));
+
+    await tester.tap(find.byKey(ValueKey('05-01-2020')));
+    await tester.tap(find.byKey(ValueKey('05-01-2020')));
+  });
+
+  testWidgets(
+      'When initialDateSelected is not null, the calendar should open with the date already selected',
+      (WidgetTester tester) async {
+    final dateFormat = DateFormat('dd-MM-yyyy');
+
+    await tester.pumpWidget(buildScrollableCleanCalendar(
+      locale: 'pt',
+      minDate: DateTime(2020, 2, 15),
+      maxDate: DateTime(2020, 3, 15),
+      initialDateSelected: DateTime(2020, 2, 20),
+      endDateSelected: DateTime(2020, 2, 25),
+      selectedDateColor: Colors.red,
+    ));
+
+    final initialDateContainer = tester
+        .firstWidget(find.byKey(ValueKey('20-02-2020_container'))) as Container;
+
+    expect(
+        ((initialDateContainer.decoration) as BoxDecoration).color, Colors.red);
+
+    final endDateContainer = tester
+        .firstWidget(find.byKey(ValueKey('25-02-2020_container'))) as Container;
+
+    expect(((endDateContainer.decoration) as BoxDecoration).color, Colors.red);
   });
 }

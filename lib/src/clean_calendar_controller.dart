@@ -33,7 +33,7 @@ class CleanCalendarController {
     while (today.weekday != startWeekDay) {
       today = today.subtract(Duration(days: 1));
     }
-    final dateFormat = DateFormat(DateFormat.NUM_MONTH_WEEKDAY_DAY);
+
     final daysOfWeek = [
       today.weekday,
       today.add(Duration(days: 1)).weekday,

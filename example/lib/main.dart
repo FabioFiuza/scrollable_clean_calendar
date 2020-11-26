@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
           onTapDate: (date) {
             print('onTap $date');
           },
-          locale: 'en', //default is en
+          locale: 'pt', //default is en
           minDate: DateTime.now(),
           maxDate: DateTime.now().add(
             Duration(days: 365),

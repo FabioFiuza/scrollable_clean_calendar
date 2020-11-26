@@ -1,10 +1,10 @@
 # Scrollable clean calendar
 
-A clean widget calendar with vertical scroll, locale, and range selection date.
+A clean calendar widget with vertical scroll, locale, and range selection date.
 
 ## Instalation
 
-Add `scrollable_clean_calendar: 0.2.0` in your `pubspec.yaml`.
+Add `scrollable_clean_calendar: 0.3.0` in your `pubspec.yaml`.
 
 ## Locale
 
@@ -29,11 +29,13 @@ Example `locale: 'pt'`
 | selectDateRadius                | false    | double    | Apply radius when selected two dates                                                                       |
 | renderPostAndPreviousMonthDates | false    | bool      | Show the dates of the first Month before the `minDate` and the dates of the last Month after the `maxDate` |
 | disabledDateColor               | false    | Color     | Color of the disabled dates                                                                                |
+| initialDateSelected             | false    | DateTime  | First date that is already selected when the calendar Init                                                 |
+| endDateSelected                 | false    | DateTime  | Last date that is already selected when the calendar Init                                                  |
 
 ## Locale en
 
-[![Captura-de-Tela-2020-10-28-a-s-22-03-12.png](https://i.postimg.cc/VkJn9MxV/Captura-de-Tela-2020-10-28-a-s-22-03-12.png)](https://postimg.cc/BjGj48QT)
+[![Simulator-Screen-Shot-i-Phone-11-2020-11-26-at-14-38-24.png](https://i.postimg.cc/8znFXH9h/Simulator-Screen-Shot-i-Phone-11-2020-11-26-at-14-38-24.png)](https://postimg.cc/mPC2tQbD)
 
 ## Locale pt
 
-[![Captura-de-Tela-2020-10-28-a-s-21-40-18.png](https://i.postimg.cc/nzjP6C9R/Captura-de-Tela-2020-10-28-a-s-21-40-18.png)](https://postimg.cc/G8RKD3QG)
+[![Simulator-Screen-Shot-i-Phone-11-2020-11-26-at-14-38-53.png](https://i.postimg.cc/PqpCgDn0/Simulator-Screen-Shot-i-Phone-11-2020-11-26-at-14-38-53.png)](https://postimg.cc/v1y89cBv)
