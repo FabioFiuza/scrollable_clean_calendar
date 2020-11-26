@@ -17,6 +17,7 @@ void main() {
     bool renderPostAndPreviousMonthDates,
     DateTime initialDateSelected,
     DateTime endDateSelected,
+    Color selectedDateColor,
   }) {
     return MaterialApp(
       home: Scaffold(
@@ -36,6 +37,7 @@ void main() {
                 renderPostAndPreviousMonthDates ?? false,
             initialDateSelected: initialDateSelected,
             endDateSelected: endDateSelected,
+            selectedDateColor: selectedDateColor ?? Colors.amber,
           ),
         ),
       ),
@@ -189,25 +191,19 @@ void main() {
       minDate: DateTime(2020, 2, 15),
       maxDate: DateTime(2020, 3, 15),
       initialDateSelected: DateTime(2020, 2, 20),
-      onTapDate: (date) {
-        expect(dateFormat.format(date), '20-02-2020');
-      },
-    ));
-  });
-
-  testWidgets(
-      'When endDateSelected is not null, the calendar should open with the date already selected',
-      (WidgetTester tester) async {
-    final dateFormat = DateFormat('dd-MM-yyyy');
-
-    await tester.pumpWidget(buildScrollableCleanCalendar(
-      locale: 'pt',
-      minDate: DateTime(2020, 2, 15),
-      maxDate: DateTime(2020, 3, 15),
       endDateSelected: DateTime(2020, 2, 25),
-      onTapDate: (date) {
-        expect(dateFormat.format(date), '25-02-2020');
-      },
+      selectedDateColor: Colors.red,
     ));
+
+    final initialDateContainer = tester
+        .firstWidget(find.byKey(ValueKey('20-02-2020_container'))) as Container;
+
+    expect(
+        ((initialDateContainer.decoration) as BoxDecoration).color, Colors.red);
+
+    final endDateContainer = tester
+        .firstWidget(find.byKey(ValueKey('25-02-2020_container'))) as Container;
+
+    expect(((endDateContainer.decoration) as BoxDecoration).color, Colors.red);
   });
 }

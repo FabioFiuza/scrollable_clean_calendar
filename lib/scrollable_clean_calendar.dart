@@ -219,6 +219,8 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
                   _onDayClick(day);
                 },
                 child: Container(
+                  key: ValueKey(
+                      '${DateFormat('dd-MM-yyyy', widget.locale).format(day)}_container'),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.horizontal(
                       left: Radius.circular(
