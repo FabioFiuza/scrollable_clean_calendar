@@ -1,10 +1,10 @@
 # Scrollable clean calendar
 
-A clean widget calendar with vertical scroll, locale, and range selection date.
+A clean calendar widget with vertical scroll, locale, and range selection date.
 
 ## Instalation
 
-Add `scrollable_clean_calendar: 0.2.0` in your `pubspec.yaml`.
+Add `scrollable_clean_calendar: 0.3.0` in your `pubspec.yaml`.
 
 ## Locale
 
@@ -29,6 +29,8 @@ Example `locale: 'pt'`
 | selectDateRadius                | false    | double    | Apply radius when selected two dates                                                                       |
 | renderPostAndPreviousMonthDates | false    | bool      | Show the dates of the first Month before the `minDate` and the dates of the last Month after the `maxDate` |
 | disabledDateColor               | false    | Color     | Color of the disabled dates                                                                                |
+| initialDateSelected             | false    | DateTime  | First date that is already selected when the calendar Init                                                 |
+| endDateSelected                 | false    | DateTime  | Last date that is already selected when the calendar Init                                                  |
 
 ## Locale en
 

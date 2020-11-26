@@ -37,6 +37,8 @@ class ScrollableCleanCalendar extends StatefulWidget {
     this.renderPostAndPreviousMonthDates = false,
     this.disabledDateColor,
     this.startWeekDay = DateTime.monday,
+    this.initialDateSelected,
+    this.endDateSelected,
   })  : assert(minDate != null),
         assert(maxDate != null),
         assert(showDaysWeeks != null),
@@ -48,6 +50,8 @@ class ScrollableCleanCalendar extends StatefulWidget {
   final bool renderPostAndPreviousMonthDates;
   final DateTime minDate;
   final DateTime maxDate;
+  final DateTime initialDateSelected;
+  final DateTime endDateSelected;
 
   /// Esse parametro sera habilitado em futuras versoes
   @deprecated
@@ -97,6 +101,18 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
 
     _cleanCalendarController =
         CleanCalendarController(startWeekDay: widget.startWeekDay);
+
+    if (widget.initialDateSelected != null &&
+        (widget.initialDateSelected.isAfter(widget.minDate) ||
+            widget.initialDateSelected.isSameDay(widget.minDate))) {
+      _onDayClick(widget.initialDateSelected);
+    }
+
+    if (widget.endDateSelected != null &&
+        (widget.endDateSelected.isBefore(widget.maxDate) ||
+            widget.endDateSelected.isSameDay(widget.maxDate))) {
+      _onDayClick(widget.endDateSelected);
+    }
 
     super.initState();
   }
@@ -328,7 +344,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
         rangeMaxDate = rangeMinDate;
         rangeMinDate = date;
       });
-    } else if (date.isAfter(rangeMinDate)) {
+    } else if (date.isAfter(rangeMinDate) || date.isSameDay(rangeMinDate)) {
       setState(() {
         rangeMaxDate = date;
       });
