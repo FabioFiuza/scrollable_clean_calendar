@@ -34,8 +34,8 @@ Example `locale: 'pt'`
 
 ## Locale en
 
-[![Captura-de-Tela-2020-10-28-a-s-22-03-12.png](https://i.postimg.cc/VkJn9MxV/Captura-de-Tela-2020-10-28-a-s-22-03-12.png)](https://postimg.cc/BjGj48QT)
+[![Simulator-Screen-Shot-i-Phone-11-2020-11-26-at-14-38-24.png](https://i.postimg.cc/8znFXH9h/Simulator-Screen-Shot-i-Phone-11-2020-11-26-at-14-38-24.png)](https://postimg.cc/mPC2tQbD)
 
 ## Locale pt
 
-[![Captura-de-Tela-2020-10-28-a-s-21-40-18.png](https://i.postimg.cc/nzjP6C9R/Captura-de-Tela-2020-10-28-a-s-21-40-18.png)](https://postimg.cc/G8RKD3QG)
+[![Simulator-Screen-Shot-i-Phone-11-2020-11-26-at-14-38-53.png](https://i.postimg.cc/PqpCgDn0/Simulator-Screen-Shot-i-Phone-11-2020-11-26-at-14-38-53.png)](https://postimg.cc/v1y89cBv)
