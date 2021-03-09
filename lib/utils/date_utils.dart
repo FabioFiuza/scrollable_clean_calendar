@@ -1,15 +1,9 @@
 import 'package:scrollable_clean_calendar/utils/date_models.dart';
 
-class WeekHelper {
-  static List<Month> extractWeeks(DateTime minDate, DateTime maxDate,
-      [int startWeekDay = DateTime.monday]) {
-    DateTime weekMinDate = _findDayOfWeekInMonth(minDate, startWeekDay);
-
-    final oneWeek = (startWeekDay + 5) > 6
-        ? ((startWeekDay + 5) - 6).abs()
-        : (startWeekDay + 5);
-
-    DateTime weekMaxDate = _findDayOfWeekInMonth(maxDate, oneWeek);
+class DateUtils {
+  static List<Month> extractWeeks(DateTime minDate, DateTime maxDate) {
+    DateTime weekMinDate = _findDayOfWeekInMonth(minDate, DateTime.monday);
+    DateTime weekMaxDate = _findDayOfWeekInMonth(maxDate, DateTime.sunday);
 
     DateTime firstDayOfWeek = weekMinDate;
     DateTime lastDayOfWeek = _lastDayOfWeek(weekMinDate);
@@ -49,9 +43,6 @@ class WeekHelper {
 
       months.add(Month(weeks));
 
-      months.removeWhere(
-          (element) => maxDate.isBefore(element.weeks.first.firstDay));
-
       return months;
     }
   }
@@ -70,7 +61,7 @@ class WeekHelper {
   static DateTime _findDayOfWeekInMonth(DateTime date, int dayOfWeek) {
     date = DateTime(date.year, date.month, date.day);
 
-    if (date.weekday == dayOfWeek) {
+    if (date.weekday == DateTime.monday) {
       return date;
     } else {
       return date.subtract(Duration(days: date.weekday - dayOfWeek));
@@ -120,7 +111,7 @@ extension DateUtilsExtensions on DateTime {
     return leapYear;
   }
 
-  int get daysInMonth => WeekHelper.daysPerMonth(year)[month - 1];
+  int get daysInMonth => DateUtils.daysPerMonth(year)[month - 1];
 
   DateTime toFirstDayOfNextMonth() => DateTime(
         year,
