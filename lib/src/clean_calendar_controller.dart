@@ -7,7 +7,7 @@ class CleanCalendarController {
       : assert(startWeekDay <= DateTime.sunday),
         assert(startWeekDay >= DateTime.monday);
 
-  List<String> getDaysOfWeek([String locale]) {
+  List<String> getDaysOfWeek([String locale = 'pt']) {
     var today = DateTime.now();
 
     while (today.weekday != startWeekDay) {

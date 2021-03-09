@@ -1,3 +1,8 @@
+## [0.4.0] - 2021-03-09
+
+- Add Support to Flutter 2.
+- Removing old dependencies.
+
 ## [0.3.0] - 2020-11-26
 
 - Fixed a bug that the End Date could not be the same as de Initial Date.

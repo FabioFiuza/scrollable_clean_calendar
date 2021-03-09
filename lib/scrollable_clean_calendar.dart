@@ -5,7 +5,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:scrollable_clean_calendar/src/clean_calendar_controller.dart';
 import 'package:scrollable_clean_calendar/src/week_helper.dart';
-import 'package:vertical_calendar/utils/date_models.dart';
+import 'package:scrollable_clean_calendar/utils/date_models.dart';
 
 import 'src/week_helper.dart';
 
@@ -15,43 +15,38 @@ extension StringExtension on String {
   }
 }
 
-typedef RangeDate = Function(DateTime minDate, DateTime maxDate);
+typedef RangeDate = Function(DateTime minDate, DateTime? maxDate);
 typedef SelectDate = Function(DateTime date);
 typedef TextStyleFunction = Function(bool isSelected);
 
 class ScrollableCleanCalendar extends StatefulWidget {
   ScrollableCleanCalendar({
-    Key key,
     this.locale = 'en',
-    @required this.minDate,
-    @required this.maxDate,
+    required this.minDate,
+    required this.maxDate,
     this.onRangeSelected,
     this.showDaysWeeks = true,
     this.monthLabelStyle,
     this.dayLabelStyle,
     this.dayWeekLabelStyle,
-    this.selectedDateColor,
-    this.rangeSelectedDateColor,
+    this.selectedDateColor = Colors.indigo,
+    this.rangeSelectedDateColor = Colors.blue,
     this.selectDateRadius = 15,
     this.onTapDate,
     this.renderPostAndPreviousMonthDates = false,
-    this.disabledDateColor,
+    this.disabledDateColor = Colors.grey,
     this.startWeekDay = DateTime.monday,
     this.initialDateSelected,
     this.endDateSelected,
-  })  : assert(minDate != null),
-        assert(maxDate != null),
-        assert(showDaysWeeks != null),
-        assert(selectDateRadius != null),
-        super(key: key);
+  });
 
   final String locale;
   final bool showDaysWeeks;
   final bool renderPostAndPreviousMonthDates;
   final DateTime minDate;
   final DateTime maxDate;
-  final DateTime initialDateSelected;
-  final DateTime endDateSelected;
+  final DateTime? initialDateSelected;
+  final DateTime? endDateSelected;
 
   /// Esse parametro sera habilitado em futuras versoes
   @deprecated
@@ -59,13 +54,13 @@ class ScrollableCleanCalendar extends StatefulWidget {
 
   final double selectDateRadius;
 
-  final RangeDate onRangeSelected;
-  final TextStyleFunction dayLabelStyle;
-  final SelectDate onTapDate;
+  final RangeDate? onRangeSelected;
+  final TextStyleFunction? dayLabelStyle;
+  final SelectDate? onTapDate;
 
   ///Styles
-  final TextStyle monthLabelStyle;
-  final TextStyle dayWeekLabelStyle;
+  final TextStyle? monthLabelStyle;
+  final TextStyle? dayWeekLabelStyle;
   final Color selectedDateColor;
   final Color rangeSelectedDateColor;
   final Color disabledDateColor;
@@ -76,13 +71,13 @@ class ScrollableCleanCalendar extends StatefulWidget {
 }
 
 class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
-  CleanCalendarController _cleanCalendarController;
+  CleanCalendarController? _cleanCalendarController;
 
-  List<Month> months;
-  DateTime rangeMinDate;
-  DateTime rangeMaxDate;
-  DateTime _minDate;
-  DateTime _maxDate;
+  List<Month>? months;
+  DateTime? rangeMinDate;
+  DateTime? rangeMaxDate;
+  DateTime? _minDate;
+  DateTime? _maxDate;
 
   @override
   void initState() {
@@ -97,21 +92,21 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
     _minDate = DateTime(widget.minDate.year, widget.minDate.month, _minDateDay);
     _maxDate = DateTime(
         widget.maxDate.year, widget.maxDate.month, _maxDateDay, 23, 59, 00);
-    months = WeekHelper.extractWeeks(_minDate, _maxDate, widget.startWeekDay);
+    months = WeekHelper.extractWeeks(_minDate!, _maxDate!, widget.startWeekDay);
 
     _cleanCalendarController =
         CleanCalendarController(startWeekDay: widget.startWeekDay);
 
     if (widget.initialDateSelected != null &&
-        (widget.initialDateSelected.isAfter(widget.minDate) ||
-            widget.initialDateSelected.isSameDay(widget.minDate))) {
-      _onDayClick(widget.initialDateSelected);
+        (widget.initialDateSelected!.isAfter(widget.minDate) ||
+            widget.initialDateSelected!.isSameDay(widget.minDate))) {
+      _onDayClick(widget.initialDateSelected!);
     }
 
     if (widget.endDateSelected != null &&
-        (widget.endDateSelected.isBefore(widget.maxDate) ||
-            widget.endDateSelected.isSameDay(widget.maxDate))) {
-      _onDayClick(widget.endDateSelected);
+        (widget.endDateSelected!.isBefore(widget.maxDate) ||
+            widget.endDateSelected!.isSameDay(widget.maxDate))) {
+      _onDayClick(widget.endDateSelected!);
     }
 
     super.initState();
@@ -122,9 +117,9 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
     return ListView.builder(
       cacheExtent:
           (MediaQuery.of(context).size.width / DateTime.daysPerWeek) * 6,
-      itemCount: months.length,
+      itemCount: months!.length,
       itemBuilder: (context, index) {
-        final month = months[index];
+        final month = months![index];
 
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -173,10 +168,9 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
 
           if ((position + widget.startWeekDay) < week.firstDay.weekday ||
               (position + widget.startWeekDay) > week.lastDay.weekday ||
-              day.isBefore(_minDate) ||
-              day.isAfter(_maxDate)) {
+              day.isBefore(_minDate!) ||
+              day.isAfter(_maxDate!)) {
             return SizedBox.shrink();
-            // return Text('oi');
           } else if (dayIsBeforeMinDate || dayIsAfterMaxDate) {
             return TableCell(
               key:
@@ -189,8 +183,8 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
                     ),
                     child: Text(
                       DateFormat('d', widget.locale).format(day),
-                      style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            color: widget.disabledDateColor ?? Colors.grey[400],
+                      style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                            color: widget.disabledDateColor,
                           ),
                     ),
                   ),
@@ -204,10 +198,10 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
 
             if (rangeFeatureEnabled) {
               if (rangeMinDate != null && rangeMaxDate != null) {
-                isSelected = day.isSameDayOrAfter(rangeMinDate) &&
-                    day.isSameDayOrBefore(rangeMaxDate);
+                isSelected = day.isSameDayOrAfter(rangeMinDate!) &&
+                    day.isSameDayOrBefore(rangeMaxDate!);
               } else {
-                isSelected = day.isAtSameMomentAs(rangeMinDate);
+                isSelected = day.isAtSameMomentAs(rangeMinDate!);
               }
             }
 
@@ -240,8 +234,8 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
                       child: Text(
                         DateFormat('d', widget.locale).format(day),
                         style: widget.dayLabelStyle != null
-                            ? widget.dayLabelStyle(isSelected)
-                            : Theme.of(context).textTheme.bodyText2.copyWith(
+                            ? widget.dayLabelStyle!(isSelected)
+                            : Theme.of(context).textTheme.bodyText2!.copyWith(
                                   color:
                                       isSelected ? Colors.white : Colors.black,
                                 ),
@@ -260,7 +254,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
 
   double _getRadiusRangeMinDate(bool isSelected, DateTime day) {
     if (isSelected) {
-      if (day.compareTo(rangeMinDate) == 0 && rangeMaxDate != null) {
+      if (day.compareTo(rangeMinDate!) == 0 && rangeMaxDate != null) {
         return widget.selectDateRadius;
       }
     }
@@ -269,7 +263,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
 
   double _getRadiusRangeMaxDate(bool isSelected, DateTime day) {
     if (isSelected) {
-      if (rangeMaxDate != null && day.compareTo(rangeMaxDate) == 0) {
+      if (rangeMaxDate != null && day.compareTo(rangeMaxDate!) == 0) {
         return widget.selectDateRadius;
       }
     }
@@ -278,11 +272,11 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
 
   Color _getBackgroundColor(bool isSelected, DateTime day) {
     if (isSelected) {
-      if (day.compareTo(rangeMinDate) == 0 ||
-          (rangeMaxDate != null && day.compareTo(rangeMaxDate) == 0)) {
-        return widget.selectedDateColor ?? Colors.indigo;
+      if (day.compareTo(rangeMinDate!) == 0 ||
+          (rangeMaxDate != null && day.compareTo(rangeMaxDate!) == 0)) {
+        return widget.selectedDateColor;
       } else {
-        return widget.rangeSelectedDateColor ?? Colors.blue;
+        return widget.rangeSelectedDateColor;
       }
     }
     return Colors.transparent;
@@ -296,12 +290,12 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
                 TableCell(
                   child: Center(
                     child: Text(
-                      _cleanCalendarController
+                      _cleanCalendarController!
                           .getDaysOfWeek(widget.locale)[i]
                           .capitalize(),
                       key: ValueKey("WeekLabel$i"),
                       style: widget.dayWeekLabelStyle ??
-                          Theme.of(context).textTheme.bodyText1.copyWith(
+                          Theme.of(context).textTheme.bodyText1!.copyWith(
                                 color: Colors.grey[300],
                                 fontWeight: FontWeight.bold,
                               ),
@@ -327,7 +321,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
               )
               .capitalize(),
           style: widget.monthLabelStyle ??
-              Theme.of(context).textTheme.bodyText1.copyWith(
+              Theme.of(context).textTheme.bodyText1!.copyWith(
                     color: Colors.grey[800],
                   ),
         ),
@@ -341,23 +335,23 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
         rangeMinDate = date;
         rangeMaxDate = null;
       });
-    } else if (date.isBefore(rangeMinDate)) {
+    } else if (date.isBefore(rangeMinDate!)) {
       setState(() {
         rangeMaxDate = rangeMinDate;
         rangeMinDate = date;
       });
-    } else if (date.isAfter(rangeMinDate) || date.isSameDay(rangeMinDate)) {
+    } else if (date.isAfter(rangeMinDate!) || date.isSameDay(rangeMinDate!)) {
       setState(() {
         rangeMaxDate = date;
       });
     }
 
     if (widget.onTapDate != null) {
-      widget.onTapDate(date);
+      widget.onTapDate!(date);
     }
 
     if (widget.onRangeSelected != null) {
-      widget.onRangeSelected(rangeMinDate, rangeMaxDate);
+      widget.onRangeSelected!(rangeMinDate!, rangeMaxDate);
     }
   }
 }

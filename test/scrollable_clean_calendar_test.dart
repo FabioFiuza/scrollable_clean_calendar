@@ -7,17 +7,17 @@ void main() {
   DateTime firstDateYear = DateTime(2020);
 
   Widget buildScrollableCleanCalendar({
-    String locale,
-    DateTime minDate,
-    DateTime maxDate,
-    bool showDayWeeks,
-    RangeDate onRangeSelected,
-    SelectDate onTapDate,
-    int startWeekDay,
-    bool renderPostAndPreviousMonthDates,
-    DateTime initialDateSelected,
-    DateTime endDateSelected,
-    Color selectedDateColor,
+    String? locale,
+    DateTime? minDate,
+    DateTime? maxDate,
+    bool? showDayWeeks,
+    RangeDate? onRangeSelected,
+    SelectDate? onTapDate,
+    int? startWeekDay,
+    bool? renderPostAndPreviousMonthDates,
+    DateTime? initialDateSelected,
+    DateTime? endDateSelected,
+    Color? selectedDateColor,
   }) {
     return MaterialApp(
       home: Scaffold(
