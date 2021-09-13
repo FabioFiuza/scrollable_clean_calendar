@@ -24,9 +24,11 @@ class ScrollableCleanCalendar extends StatefulWidget {
     this.locale = 'en',
     required this.minDate,
     required this.maxDate,
+    this.isRangeMode = true,
     this.onRangeSelected,
     this.showDaysWeeks = true,
     this.monthLabelStyle,
+    this.monthLabelAlign = MainAxisAlignment.center,
     this.dayLabelStyle,
     this.dayWeekLabelStyle,
     this.selectedDateColor = Colors.indigo,
@@ -40,6 +42,7 @@ class ScrollableCleanCalendar extends StatefulWidget {
     this.endDateSelected,
   });
 
+  final bool isRangeMode;
   final String locale;
   final bool showDaysWeeks;
   final bool renderPostAndPreviousMonthDates;
@@ -64,6 +67,7 @@ class ScrollableCleanCalendar extends StatefulWidget {
   final Color selectedDateColor;
   final Color rangeSelectedDateColor;
   final Color disabledDateColor;
+  final MainAxisAlignment monthLabelAlign;
 
   @override
   _ScrollableCleanCalendarState createState() =>
@@ -312,36 +316,46 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
 
   Widget _buildMonthLabelRow(Month month, BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: widget.monthLabelAlign,
       children: [
-        Text(
-          DateFormat('MMMM yyyy', widget.locale)
-              .format(
-                DateTime(month.year, month.month),
-              )
-              .capitalize(),
-          style: widget.monthLabelStyle ??
-              Theme.of(context).textTheme.bodyText1!.copyWith(
-                    color: Colors.grey[800],
-                  ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: Text(
+            DateFormat('MMMM yyyy', widget.locale)
+                .format(
+                  DateTime(month.year, month.month),
+                )
+                .capitalize(),
+            style: widget.monthLabelStyle ??
+                Theme.of(context).textTheme.bodyText1!.copyWith(
+                      color: Colors.grey[800],
+                    ),
+          ),
         ),
       ],
     );
   }
 
   void _onDayClick(DateTime date) {
-    if (rangeMinDate == null || rangeMaxDate != null) {
+    if (widget.isRangeMode) {
+      if (rangeMinDate == null || rangeMaxDate != null) {
+        setState(() {
+          rangeMinDate = date;
+          rangeMaxDate = null;
+        });
+      } else if (date.isBefore(rangeMinDate!)) {
+        setState(() {
+          rangeMaxDate = rangeMinDate;
+          rangeMinDate = date;
+        });
+      } else if (date.isAfter(rangeMinDate!) || date.isSameDay(rangeMinDate!)) {
+        setState(() {
+          rangeMaxDate = date;
+        });
+      }
+    } else {
       setState(() {
         rangeMinDate = date;
-        rangeMaxDate = null;
-      });
-    } else if (date.isBefore(rangeMinDate!)) {
-      setState(() {
-        rangeMaxDate = rangeMinDate;
-        rangeMinDate = date;
-      });
-    } else if (date.isAfter(rangeMinDate!) || date.isSameDay(rangeMinDate!)) {
-      setState(() {
         rangeMaxDate = date;
       });
     }

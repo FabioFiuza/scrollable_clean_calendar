@@ -18,6 +18,7 @@ void main() {
     DateTime? initialDateSelected,
     DateTime? endDateSelected,
     Color? selectedDateColor,
+    bool? isRangeMode,
   }) {
     return MaterialApp(
       home: Scaffold(
@@ -38,6 +39,7 @@ void main() {
             initialDateSelected: initialDateSelected,
             endDateSelected: endDateSelected,
             selectedDateColor: selectedDateColor ?? Colors.amber,
+            isRangeMode: isRangeMode ?? true,
           ),
         ),
       ),
@@ -205,5 +207,34 @@ void main() {
         .firstWidget(find.byKey(ValueKey('25-02-2020_container'))) as Container;
 
     expect(((endDateContainer.decoration) as BoxDecoration).color, Colors.red);
+  });
+
+  testWidgets(
+      'Should initial and final date is same on click when isRangeMode is false',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(buildScrollableCleanCalendar(
+      locale: 'pt',
+      minDate: DateTime(2020, 2, 15),
+      maxDate: DateTime(2020, 3, 15),
+      selectedDateColor: Colors.red,
+      isRangeMode: false,
+    ));
+
+    await tester.tap(find.byKey(ValueKey('20-02-2020_container')));
+    await tester.pumpAndSettle();
+
+    final selectedDateContainer = tester
+        .firstWidget(find.byKey(ValueKey('20-02-2020_container'))) as Container;
+
+    expect(((selectedDateContainer.decoration) as BoxDecoration).color,
+        Colors.red);
+
+    expect(
+      ((selectedDateContainer.decoration) as BoxDecoration).borderRadius,
+      BorderRadius.horizontal(
+        left: Radius.circular(15),
+        right: Radius.circular(15),
+      ),
+    );
   });
 }
