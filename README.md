@@ -18,6 +18,9 @@ Example `locale: 'pt'`
 | ------------------------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------- |
 | minDate                         | true     | DateTime  | initial calendar date                                                                                      |
 | maxDate                         | true     | DateTime  | last calendar date                                                                                         |
+| isRangeMode                         | false     | DateTime  | if you want to select two dates value should be true. "Default is true"                                                                                         |
+| monthLabelAlign                         | false     | DateTime  | Alignment of the Month text. "Default is true"                                                                                          |
+| maxDate                         | true     | DateTime  | last calendar date                                                                                         |
 | onRangeSelected                 | false    | Function  | return two date selected                                                                                   |
 | onTapDate                       | false    | Function  | return the date selected                                                                                   |
 | dayLabelStyle                   | false    | Function  | Function to determine style day label                                                                      |
