@@ -1,6 +1,6 @@
 ## [0.5.0] - 2021-09-13
 
--  Add option to use calendar without date range, with only one date (#1)
+-  Add option to use calendar without date range, with only one date
 
 ## [0.4.0] - 2021-03-09
 
