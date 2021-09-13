@@ -1,3 +1,7 @@
+## [0.5.0] - 2021-09-13
+
+-  Add option to use calendar without date range, with only one date (#1)
+
 ## [0.4.0] - 2021-03-09
 
 - Add Support to Flutter 2.
