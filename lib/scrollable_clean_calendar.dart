@@ -40,8 +40,10 @@ class ScrollableCleanCalendar extends StatefulWidget {
     this.startWeekDay = DateTime.monday,
     this.initialDateSelected,
     this.endDateSelected,
+    this.scrollController,
   });
 
+  final ScrollController? scrollController;
   final bool isRangeMode;
   final String locale;
   final bool showDaysWeeks;
@@ -121,6 +123,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      controller: widget.scrollController,
       cacheExtent:
           (MediaQuery.of(context).size.width / DateTime.daysPerWeek) * 6,
       itemCount: months!.length,
