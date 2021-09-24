@@ -352,5 +352,13 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
       rangeMaxDate = date;
     }
     if (callSetState) setState(() {});
+
+    if (widget.onTapDate != null) {
+      widget.onTapDate!(date);
+    }
+
+    if (widget.onRangeSelected != null) {
+      widget.onRangeSelected!(rangeMinDate!, rangeMaxDate);
+    }
   }
 }
