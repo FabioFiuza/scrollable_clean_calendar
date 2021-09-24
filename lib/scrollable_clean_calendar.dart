@@ -104,13 +104,13 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
     if (widget.initialDateSelected != null &&
         (widget.initialDateSelected!.isAfter(widget.minDate) ||
             widget.initialDateSelected!.isSameDay(widget.minDate))) {
-      _onDayClick(widget.initialDateSelected!);
+      _onDayClick(widget.initialDateSelected!, false);
     }
 
     if (widget.endDateSelected != null &&
         (widget.endDateSelected!.isBefore(widget.maxDate) ||
             widget.endDateSelected!.isSameDay(widget.maxDate))) {
-      _onDayClick(widget.endDateSelected!);
+      _onDayClick(widget.endDateSelected!, false);
     }
 
     super.initState();
@@ -336,36 +336,21 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
     );
   }
 
-  void _onDayClick(DateTime date) {
+  void _onDayClick(DateTime date, [bool callSetState = true]) {
     if (widget.isRangeMode) {
       if (rangeMinDate == null || rangeMaxDate != null) {
-        setState(() {
-          rangeMinDate = date;
-          rangeMaxDate = null;
-        });
+        rangeMinDate = date;
+        rangeMaxDate = null;
       } else if (date.isBefore(rangeMinDate!)) {
-        setState(() {
-          rangeMaxDate = rangeMinDate;
-          rangeMinDate = date;
-        });
+        rangeMaxDate = rangeMinDate;
+        rangeMinDate = date;
       } else if (date.isAfter(rangeMinDate!) || date.isSameDay(rangeMinDate!)) {
-        setState(() {
-          rangeMaxDate = date;
-        });
+        rangeMaxDate = date;
       }
     } else {
-      setState(() {
-        rangeMinDate = date;
-        rangeMaxDate = date;
-      });
+      rangeMinDate = date;
+      rangeMaxDate = date;
     }
-
-    if (widget.onTapDate != null) {
-      widget.onTapDate!(date);
-    }
-
-    if (widget.onRangeSelected != null) {
-      widget.onRangeSelected!(rangeMinDate!, rangeMaxDate);
-    }
+    if (callSetState) setState(() {});
   }
 }
