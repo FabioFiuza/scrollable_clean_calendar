@@ -101,17 +101,19 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
     _cleanCalendarController =
         CleanCalendarController(startWeekDay: widget.startWeekDay);
 
-    if (widget.initialDateSelected != null &&
-        (widget.initialDateSelected!.isAfter(widget.minDate) ||
-            widget.initialDateSelected!.isSameDay(widget.minDate))) {
-      _onDayClick(widget.initialDateSelected!, false);
-    }
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      if (widget.initialDateSelected != null &&
+          (widget.initialDateSelected!.isAfter(widget.minDate) ||
+              widget.initialDateSelected!.isSameDay(widget.minDate))) {
+        _onDayClick(widget.initialDateSelected!);
+      }
 
-    if (widget.endDateSelected != null &&
-        (widget.endDateSelected!.isBefore(widget.maxDate) ||
-            widget.endDateSelected!.isSameDay(widget.maxDate))) {
-      _onDayClick(widget.endDateSelected!, false);
-    }
+      if (widget.endDateSelected != null &&
+          (widget.endDateSelected!.isBefore(widget.maxDate) ||
+              widget.endDateSelected!.isSameDay(widget.maxDate))) {
+        _onDayClick(widget.endDateSelected!);
+      }
+    });
 
     super.initState();
   }
@@ -336,7 +338,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
     );
   }
 
-  void _onDayClick(DateTime date, [bool callSetState = true]) {
+  void _onDayClick(DateTime date) {
     if (widget.isRangeMode) {
       if (rangeMinDate == null || rangeMaxDate != null) {
         rangeMinDate = date;
@@ -351,14 +353,6 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
       rangeMinDate = date;
       rangeMaxDate = date;
     }
-    if (callSetState) setState(() {});
-
-    if (widget.onTapDate != null) {
-      widget.onTapDate!(date);
-    }
-
-    if (widget.onRangeSelected != null) {
-      widget.onRangeSelected!(rangeMinDate!, rangeMaxDate);
-    }
+    setState(() {});
   }
 }
