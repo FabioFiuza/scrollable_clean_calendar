@@ -1,3 +1,7 @@
+## [0.5.1] - 2021-09-13
+- Minor fix in ScrollController
+- Fix in setState() on initState
+
 ## [0.5.0] - 2021-09-13
 
 -  Add option to use calendar without date range, with only one date
