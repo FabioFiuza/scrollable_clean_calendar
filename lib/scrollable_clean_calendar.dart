@@ -40,8 +40,10 @@ class ScrollableCleanCalendar extends StatefulWidget {
     this.startWeekDay = DateTime.monday,
     this.initialDateSelected,
     this.endDateSelected,
+    this.scrollController,
   });
 
+  final ScrollController? scrollController;
   final bool isRangeMode;
   final String locale;
   final bool showDaysWeeks;
@@ -101,17 +103,19 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
     _cleanCalendarController =
         CleanCalendarController(startWeekDay: widget.startWeekDay);
 
-    if (widget.initialDateSelected != null &&
-        (widget.initialDateSelected!.isAfter(widget.minDate) ||
-            widget.initialDateSelected!.isSameDay(widget.minDate))) {
-      _onDayClick(widget.initialDateSelected!);
-    }
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      if (widget.initialDateSelected != null &&
+          (widget.initialDateSelected!.isAfter(widget.minDate) ||
+              widget.initialDateSelected!.isSameDay(widget.minDate))) {
+        _onDayClick(widget.initialDateSelected!);
+      }
 
-    if (widget.endDateSelected != null &&
-        (widget.endDateSelected!.isBefore(widget.maxDate) ||
-            widget.endDateSelected!.isSameDay(widget.maxDate))) {
-      _onDayClick(widget.endDateSelected!);
-    }
+      if (widget.endDateSelected != null &&
+          (widget.endDateSelected!.isBefore(widget.maxDate) ||
+              widget.endDateSelected!.isSameDay(widget.maxDate))) {
+        _onDayClick(widget.endDateSelected!);
+      }
+    });
 
     super.initState();
   }
@@ -119,6 +123,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      controller: widget.scrollController,
       cacheExtent:
           (MediaQuery.of(context).size.width / DateTime.daysPerWeek) * 6,
       itemCount: months!.length,
@@ -339,26 +344,19 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
   void _onDayClick(DateTime date) {
     if (widget.isRangeMode) {
       if (rangeMinDate == null || rangeMaxDate != null) {
-        setState(() {
-          rangeMinDate = date;
-          rangeMaxDate = null;
-        });
+        rangeMinDate = date;
+        rangeMaxDate = null;
       } else if (date.isBefore(rangeMinDate!)) {
-        setState(() {
-          rangeMaxDate = rangeMinDate;
-          rangeMinDate = date;
-        });
+        rangeMaxDate = rangeMinDate;
+        rangeMinDate = date;
       } else if (date.isAfter(rangeMinDate!) || date.isSameDay(rangeMinDate!)) {
-        setState(() {
-          rangeMaxDate = date;
-        });
+        rangeMaxDate = date;
       }
     } else {
-      setState(() {
-        rangeMinDate = date;
-        rangeMaxDate = date;
-      });
+      rangeMinDate = date;
+      rangeMaxDate = date;
     }
+    setState(() {});
 
     if (widget.onTapDate != null) {
       widget.onTapDate!(date);
