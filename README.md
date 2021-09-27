@@ -4,7 +4,7 @@ A clean calendar widget with vertical scroll, locale, and range selection date.
 
 ## Instalation
 
-Add `scrollable_clean_calendar: 0.5.0` in your `pubspec.yaml`.
+Add `scrollable_clean_calendar: 0.5.1` in your `pubspec.yaml`.
 
 ## Locale
 
