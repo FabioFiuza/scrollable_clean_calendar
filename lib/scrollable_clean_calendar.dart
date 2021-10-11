@@ -326,11 +326,17 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Text(
-            DateFormat('MMMM yyyy', widget.locale)
-                .format(
-                  DateTime(month.year, month.month),
-                )
-                .capitalize(),
+            "${DateFormat('MMMM', widget.locale).format(
+                  DateTime(
+                    month.year,
+                    month.month,
+                  ),
+                ).capitalize()} ${DateFormat('yyyy', widget.locale).format(
+              DateTime(
+                month.year,
+                month.month,
+              ),
+            )}",
             style: widget.monthLabelStyle ??
                 Theme.of(context).textTheme.bodyText1!.copyWith(
                       color: Colors.grey[800],
