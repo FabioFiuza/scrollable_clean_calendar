@@ -1,11 +1,30 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:scrollable_clean_calendar/utils/date_models.dart';
+import 'package:scrollable_clean_calendar/src/week_helper.dart';
 
-class CleanCalendarController {
-  final startWeekDay;
+class CleanCalendarController extends ChangeNotifier {
+  final int startWeekDay;
+  final bool rangeMode;
+  final List<Month> months;
+  final DateTime minDate;
+  final DateTime maxDate;
+  final Function(DateTime date)? onTapDate;
+  final Function(DateTime minDate, DateTime? maxDate)? onRangeSelected;
 
-  CleanCalendarController({this.startWeekDay = DateTime.sunday})
-      : assert(startWeekDay <= DateTime.sunday),
+  CleanCalendarController({
+    required this.months,
+    required this.rangeMode,
+    required this.onTapDate,
+    required this.onRangeSelected,
+    required this.minDate,
+    required this.maxDate,
+    this.startWeekDay = DateTime.sunday,
+  })  : assert(startWeekDay <= DateTime.sunday),
         assert(startWeekDay >= DateTime.monday);
+
+  DateTime? rangeMinDate;
+  DateTime? rangeMaxDate;
 
   List<String> getDaysOfWeek([String locale = 'pt']) {
     var today = DateTime.now();
@@ -27,22 +46,30 @@ class CleanCalendarController {
     return daysOfWeek;
   }
 
-  List<int> dayOfWeek() {
-    var today = DateTime.now();
-
-    while (today.weekday != startWeekDay) {
-      today = today.subtract(Duration(days: 1));
+  void onDayClick(DateTime date) {
+    if (rangeMode) {
+      if (rangeMinDate == null || rangeMaxDate != null) {
+        rangeMinDate = date;
+        rangeMaxDate = null;
+      } else if (date.isBefore(rangeMinDate!)) {
+        rangeMaxDate = rangeMinDate;
+        rangeMinDate = date;
+      } else if (date.isAfter(rangeMinDate!) || date.isSameDay(rangeMinDate!)) {
+        rangeMaxDate = date;
+      }
+    } else {
+      rangeMinDate = date;
+      rangeMaxDate = date;
     }
 
-    final daysOfWeek = [
-      today.weekday,
-      today.add(Duration(days: 1)).weekday,
-      today.add(Duration(days: 2)).weekday,
-      today.add(Duration(days: 3)).weekday,
-      today.add(Duration(days: 4)).weekday,
-      today.add(Duration(days: 5)).weekday,
-      today.add(Duration(days: 6)).weekday
-    ];
-    return daysOfWeek;
+    notifyListeners();
+
+    if (onTapDate != null) {
+      onTapDate!(date);
+    }
+
+    if (onRangeSelected != null) {
+      onRangeSelected!(rangeMinDate!, rangeMaxDate);
+    }
   }
 }
