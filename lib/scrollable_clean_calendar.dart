@@ -116,8 +116,8 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
       controller: widget.scrollController,
       padding: widget.padding ??
           const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
-      cacheExtent:
-          (MediaQuery.of(context).size.width / DateTime.daysPerWeek) * 6,
+      // cacheExtent:
+      //     (MediaQuery.of(context).size.width / DateTime.daysPerWeek) * 6,
       separatorBuilder: (_, __) =>
           SizedBox(height: widget.spaceBetweenCalendars),
       itemCount: _cleanCalendarController.months.length,

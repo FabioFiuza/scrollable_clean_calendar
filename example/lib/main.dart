@@ -41,8 +41,8 @@ class MyApp extends StatelessWidget {
             print('onTap $date');
           },
           locale: 'pt',
-          layout: Layout.DEFAULT,
-          // calendarCrossAxisSpacing: 0,
+          layout: Layout.BEAUTY,
+          calendarCrossAxisSpacing: 0,
           startWeekDay: DateTime.sunday,
           minDate: DateTime.now(),
           maxDate: DateTime.now().add(Duration(days: 365)),
