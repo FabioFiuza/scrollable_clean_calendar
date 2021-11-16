@@ -2,27 +2,60 @@ library scrollable_clean_calendar;
 
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:scrollable_clean_calendar/models/day_values_model.dart';
 import 'package:scrollable_clean_calendar/src/clean_calendar_controller.dart';
-import 'package:scrollable_clean_calendar/src/week_helper.dart';
 import 'package:scrollable_clean_calendar/utils/enums.dart';
 import 'package:scrollable_clean_calendar/widgets/days_widget.dart';
 import 'package:scrollable_clean_calendar/widgets/month_widget.dart';
-import 'package:scrollable_clean_calendar/widgets/week_days_widget.dart';
-
-import 'src/week_helper.dart';
+import 'package:scrollable_clean_calendar/widgets/weekdays_widget.dart';
+import 'package:scrollable_clean_calendar/utils/extensions.dart';
 
 class ScrollableCleanCalendar extends StatefulWidget {
-  ScrollableCleanCalendar({
+  final String locale;
+  final ScrollController? scrollController;
+  final DateTime minDate;
+  final DateTime maxDate;
+  final DateTime? initialDateSelected;
+  final DateTime? endDateSelected;
+  final bool showWeekdays;
+  final int weekdayStart;
+  final Function(DateTime date)? onDayTapped;
+  final Function(DateTime minDate, DateTime? maxDate)? onRangeSelected;
+  final Function(DateTime date)? onPreviousMinDateTapped;
+  final Function(DateTime date)? onAfterMaxDateTapped;
+  final bool isRangeMode;
+  final Layout? layout;
+  final double spaceBetweenMonthAndCalendar;
+  final double spaceBetweenCalendars;
+  final double calendarCrossAxisSpacing;
+  final double calendarMainAxisSpacing;
+  final EdgeInsetsGeometry? padding;
+  final TextStyle? monthTextStyle;
+  final TextAlign? monthTextAlign;
+  final TextStyle? weekDayTextStyle;
+  final TextStyle? dayTextStyle;
+  final Color? daySelectedBackgroundColor;
+  final Color? dayBackgroundColor;
+  final Color? daySelectedBackgroundColorBetween;
+  final Color? dayDisableBackgroundColor;
+  final double radius;
+  final Widget Function(BuildContext context, String month)? monthBuilder;
+  final Widget Function(BuildContext context, String weekDay)? weekDayBuilder;
+  final Widget Function(BuildContext context, DayValues values)? dayBuilder;
+
+  const ScrollableCleanCalendar({
     this.locale = 'en',
     this.scrollController,
     required this.minDate,
     required this.maxDate,
     this.initialDateSelected,
     this.endDateSelected,
-    this.showDaysWeeks = true,
-    this.startWeekDay = DateTime.monday,
-    this.onTapDate,
+    this.showWeekdays = true,
+    this.weekdayStart = DateTime.monday,
+    this.onDayTapped,
     this.onRangeSelected,
+    this.onPreviousMinDateTapped,
+    this.onAfterMaxDateTapped,
     this.isRangeMode = true,
     this.layout,
     this.calendarCrossAxisSpacing = 4,
@@ -33,42 +66,19 @@ class ScrollableCleanCalendar extends StatefulWidget {
     this.monthBuilder,
     this.weekDayBuilder,
     this.dayBuilder,
-  }) : assert(
-          (layout != null &&
-                  (monthBuilder == null ||
-                      weekDayBuilder == null ||
-                      dayBuilder == null)) ||
-              (layout == null &&
-                  (monthBuilder == null ||
-                      weekDayBuilder == null ||
-                      dayBuilder == null)),
-        );
-
-  final String locale;
-  final ScrollController? scrollController;
-  final DateTime minDate;
-  final DateTime maxDate;
-  final DateTime? initialDateSelected;
-  final DateTime? endDateSelected;
-  final bool showDaysWeeks;
-  final int startWeekDay;
-  final Function(DateTime date)? onTapDate;
-  final Function(DateTime minDate, DateTime? maxDate)? onRangeSelected;
-  final bool isRangeMode;
-  final Layout? layout;
-  final double spaceBetweenMonthAndCalendar;
-  final double spaceBetweenCalendars;
-  final double calendarCrossAxisSpacing;
-  final double calendarMainAxisSpacing;
-  final EdgeInsetsGeometry? padding;
-  final Widget Function(BuildContext context, String month)? monthBuilder;
-  final Widget Function(BuildContext context, String weekDay)? weekDayBuilder;
-  final Widget Function(
-    BuildContext context, {
-    required DateTime day,
-    required String text,
-    required bool isSelected,
-  })? dayBuilder;
+    this.monthTextAlign,
+    this.monthTextStyle,
+    this.weekDayTextStyle,
+    this.daySelectedBackgroundColor,
+    this.dayBackgroundColor,
+    this.daySelectedBackgroundColorBetween,
+    this.dayDisableBackgroundColor,
+    this.dayTextStyle,
+    this.radius = 6,
+  }) : assert(layout != null ||
+            (monthBuilder != null &&
+                weekDayBuilder != null &&
+                dayBuilder != null));
 
   @override
   _ScrollableCleanCalendarState createState() =>
@@ -81,14 +91,22 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
   @override
   void initState() {
     initializeDateFormatting();
+    List<DateTime> months = [];
+
+    DateTime currentDate = DateTime(widget.minDate.year, widget.minDate.month);
+
+    while (!(currentDate.year != widget.maxDate.year &&
+        currentDate.month != widget.maxDate.month)) {
+      months.add(currentDate);
+      currentDate = DateTime(currentDate.year, currentDate.month + 1);
+    }
 
     _cleanCalendarController = CleanCalendarController(
-      startWeekDay: widget.startWeekDay,
-      months: WeekHelper.extractWeeks(
-          widget.minDate, widget.maxDate, widget.startWeekDay),
+      startWeekDay: widget.weekdayStart,
+      months: months,
       rangeMode: widget.isRangeMode,
       onRangeSelected: widget.onRangeSelected,
-      onTapDate: widget.onTapDate,
+      onTapDate: widget.onDayTapped,
       maxDate: widget.maxDate,
       minDate: widget.minDate,
     );
@@ -125,22 +143,29 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
         final month = _cleanCalendarController.months[index];
 
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            MonthWidget(
-              month: month,
-              locale: widget.locale,
-              layout: widget.layout,
-              monthBuilder: widget.monthBuilder,
+            SizedBox(
+              width: double.maxFinite,
+              child: MonthWidget(
+                month: month,
+                locale: widget.locale,
+                layout: widget.layout,
+                monthBuilder: widget.monthBuilder,
+                textAlign: widget.monthTextAlign,
+                textStyle: widget.monthTextStyle,
+              ),
             ),
             SizedBox(height: widget.spaceBetweenMonthAndCalendar),
             Column(
               children: [
-                WeekDaysWidget(
-                  showDaysWeeks: widget.showDaysWeeks,
+                WeekdaysWidget(
+                  showWeekdays: widget.showWeekdays,
                   cleanCalendarController: _cleanCalendarController,
                   locale: widget.locale,
                   layout: widget.layout,
                   weekDayBuilder: widget.weekDayBuilder,
+                  textStyle: widget.weekDayTextStyle,
                 ),
                 AnimatedBuilder(
                   animation: _cleanCalendarController,
@@ -152,6 +177,15 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
                       calendarMainAxisSpacing: widget.calendarMainAxisSpacing,
                       layout: widget.layout,
                       dayBuilder: widget.dayBuilder,
+                      onAfterMaxDateTapped: widget.onAfterMaxDateTapped,
+                      onPreviousMinDateTapped: widget.onPreviousMinDateTapped,
+                      backgroundColor: widget.dayBackgroundColor,
+                      selectedColor: widget.daySelectedBackgroundColor,
+                      selectedColorBetween:
+                          widget.daySelectedBackgroundColorBetween,
+                      disableColor: widget.dayDisableBackgroundColor,
+                      radius: widget.radius,
+                      textStyle: widget.dayTextStyle,
                     );
                   },
                 )

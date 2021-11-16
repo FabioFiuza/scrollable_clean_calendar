@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Scrollable clean calendar',
       theme: ThemeData(
-        colorScheme: ColorScheme(
+        colorScheme: const ColorScheme(
           primary: Color(0xFF3F51B5),
           primaryVariant: Color(0xFF002984),
           secondary: Color(0xFFD32F2F),
@@ -30,22 +30,44 @@ class MyApp extends StatelessWidget {
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: Text('ScrollableCleanCalendar'),
+          title: const Text('Scrollable Clean Calendar'),
         ),
         body: ScrollableCleanCalendar(
-          onRangeSelected: (firstDate, secondDate) {
-            print('onRangeSelected first $firstDate');
-            print('onRangeSelected second $secondDate');
-          },
-          onTapDate: (date) {
-            print('onTap $date');
-          },
+          onRangeSelected: (firstDate, secondDate) {},
+          onDayTapped: (date) {},
           locale: 'pt',
           layout: Layout.BEAUTY,
-          calendarCrossAxisSpacing: 0,
-          startWeekDay: DateTime.sunday,
-          minDate: DateTime.now(),
-          maxDate: DateTime.now().add(Duration(days: 365)),
+
+          // calendarCrossAxisSpacing: 4,
+          // calendarMainAxisSpacing: 4,
+          // calendarCrossAxisSpacing: 0,
+          // dayBackgroundColor: Colors.white,
+          // dayDisableBackgroundColor: Colors.grey[200],
+          // daySelectedBackgroundColor: Colors.red,
+          // daySelectedBackgroundColorBetween: Colors.red.withOpacity(.3),
+          // showWeekdays: false,
+          // monthBuilder: (context, value) {
+          //   return Text(
+          //     value.toUpperCase(),
+          //     style: const TextStyle(
+          //       fontSize: 24,
+          //       fontWeight: FontWeight.bold,
+          //     ),
+          //   );
+          // },
+          // weekDayBuilder: (context, value) {
+          //   return Text(value);
+          // },
+          // dayBuilder: (context, values) {
+          //   return Container(
+          //     color: values.isSelected ? Colors.yellow : Colors.transparent,
+          //     alignment: Alignment.center,
+          //     child: Text(values.text),
+          //   );
+          // },
+          weekdayStart: DateTime.sunday,
+          minDate: DateTime(2021, 12, 28),
+          maxDate: DateTime(2021, 12, 28).add(const Duration(days: 365)),
         ),
       ),
     );

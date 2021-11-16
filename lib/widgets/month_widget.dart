@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'package:scrollable_clean_calendar/utils/date_models.dart';
 import 'package:scrollable_clean_calendar/utils/enums.dart';
 import 'package:scrollable_clean_calendar/utils/extensions.dart';
 
 class MonthWidget extends StatelessWidget {
-  final Month month;
+  final DateTime month;
   final String locale;
   final Layout? layout;
+  final TextStyle? textStyle;
+  final TextAlign? textAlign;
   final Widget Function(BuildContext context, String month)? monthBuilder;
 
   const MonthWidget({
@@ -17,6 +18,8 @@ class MonthWidget extends StatelessWidget {
     required this.locale,
     required this.layout,
     required this.monthBuilder,
+    required this.textStyle,
+    required this.textAlign,
   }) : super(key: key);
 
   @override
@@ -24,37 +27,29 @@ class MonthWidget extends StatelessWidget {
     final text = DateFormat('MMMM yyyy', locale)
         .format(DateTime(month.year, month.month));
 
-    if (layout != null) {
-      return <Layout, Widget Function()>{
-        Layout.DEFAULT: () => _pattern(context, text),
-        Layout.BEAUTY: () => _beauty(context, text)
-      }[layout]!();
+    if (monthBuilder != null) {
+      return monthBuilder!(context, text);
     }
 
-    return monthBuilder!(context, text);
+    return <Layout, Widget Function()>{
+      Layout.DEFAULT: () => _pattern(context, text),
+      Layout.BEAUTY: () => _beauty(context, text)
+    }[layout]!();
   }
 
   Widget _pattern(BuildContext context, String text) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Text(
-          text.capitalize(),
-          style: Theme.of(context).textTheme.headline6!,
-        ),
-      ],
+    return Text(
+      text.capitalize(),
+      textAlign: textAlign ?? TextAlign.center,
+      style: textStyle ?? Theme.of(context).textTheme.headline6!,
     );
   }
 
   Widget _beauty(BuildContext context, String text) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Text(
-          text.capitalize(),
-          style: Theme.of(context).textTheme.headline6!,
-        ),
-      ],
+    return Text(
+      text.capitalize(),
+      textAlign: textAlign ?? TextAlign.center,
+      style: textStyle ?? Theme.of(context).textTheme.headline6!,
     );
   }
 }

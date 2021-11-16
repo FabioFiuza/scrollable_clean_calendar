@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:scrollable_clean_calendar/utils/date_models.dart';
-import 'package:scrollable_clean_calendar/src/week_helper.dart';
+import 'package:scrollable_clean_calendar/utils/extensions.dart';
 
 class CleanCalendarController extends ChangeNotifier {
   final int startWeekDay;
   final bool rangeMode;
-  final List<Month> months;
+  final List<DateTime> months;
   final DateTime minDate;
   final DateTime maxDate;
   final Function(DateTime date)? onTapDate;
   final Function(DateTime minDate, DateTime? maxDate)? onRangeSelected;
+
+  late int endWeekDay;
 
   CleanCalendarController({
     required this.months,
@@ -21,7 +22,10 @@ class CleanCalendarController extends ChangeNotifier {
     required this.maxDate,
     this.startWeekDay = DateTime.sunday,
   })  : assert(startWeekDay <= DateTime.sunday),
-        assert(startWeekDay >= DateTime.monday);
+        assert(startWeekDay >= DateTime.monday) {
+    final x = startWeekDay - 1;
+    endWeekDay = x == 0 ? 7 : x;
+  }
 
   DateTime? rangeMinDate;
   DateTime? rangeMaxDate;
@@ -30,17 +34,17 @@ class CleanCalendarController extends ChangeNotifier {
     var today = DateTime.now();
 
     while (today.weekday != startWeekDay) {
-      today = today.subtract(Duration(days: 1));
+      today = today.subtract(const Duration(days: 1));
     }
     final dateFormat = DateFormat(DateFormat.ABBR_WEEKDAY, locale);
     final daysOfWeek = [
       dateFormat.format(today),
-      dateFormat.format(today.add(Duration(days: 1))),
-      dateFormat.format(today.add(Duration(days: 2))),
-      dateFormat.format(today.add(Duration(days: 3))),
-      dateFormat.format(today.add(Duration(days: 4))),
-      dateFormat.format(today.add(Duration(days: 5))),
-      dateFormat.format(today.add(Duration(days: 6)))
+      dateFormat.format(today.add(const Duration(days: 1))),
+      dateFormat.format(today.add(const Duration(days: 2))),
+      dateFormat.format(today.add(const Duration(days: 3))),
+      dateFormat.format(today.add(const Duration(days: 4))),
+      dateFormat.format(today.add(const Duration(days: 5))),
+      dateFormat.format(today.add(const Duration(days: 6)))
     ];
 
     return daysOfWeek;
