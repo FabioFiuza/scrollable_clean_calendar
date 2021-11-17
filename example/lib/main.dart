@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Scrollable clean calendar',
+      title: 'Scrollable Clean Calendar',
       theme: ThemeData(
         colorScheme: const ColorScheme(
           primary: Color(0xFF3F51B5),
@@ -35,7 +35,9 @@ class MyApp extends StatelessWidget {
         body: ScrollableCleanCalendar(
           onRangeSelected: (firstDate, secondDate) {},
           onDayTapped: (date) {},
-          locale: 'pt',
+          onPreviousMinDateTapped: (date) {},
+          onAfterMaxDateTapped: (date) {},
+          locale: 'pl_PL',
           layout: Layout.DEFAULT,
           // initialDateSelected: DateTime(2022, 2, 3),
           // endDateSelected: DateTime(2022, 2, 3),
@@ -43,20 +45,24 @@ class MyApp extends StatelessWidget {
           // calendarMainAxisSpacing: 4,
           // calendarCrossAxisSpacing: 0,
           // dayBackgroundColor: Colors.white,
-          // dayDisableBackgroundColor: Colors.grey[200],
-          // daySelectedBackgroundColor: Colors.red,
+          // dayDisableBackgroundColor: Colors.black,
+          // daySelectedBackgroundColor: Colors.indigo,
+          // monthTextStyle: const TextStyle(
+          //   fontSize: 24,
+          //   fontWeight: FontWeight.bold,
+          // ),
           // daySelectedBackgroundColorBetween: Colors.red.withOpacity(.3),
           // showWeekdays: false,
           // monthBuilder: (context, value) {
           //   return Text(
           //     value.toUpperCase(),
-          //     style: const TextStyle(
-          //       fontSize: 24,
-          //       fontWeight: FontWeight.bold,
-          //     ),
+          // style: const TextStyle(
+          //   fontSize: 24,
+          //   fontWeight: FontWeight.bold,
+          // ),
           //   );
           // },
-          // weekDayBuilder: (context, value) {
+          // weekdayBuilder: (context, value) {
           //   return Text(value);
           // },
           // dayBuilder: (context, values) {
@@ -66,9 +72,11 @@ class MyApp extends StatelessWidget {
           //     child: Text(values.text),
           //   );
           // },
-          weekdayStart: DateTime.sunday,
-          minDate: DateTime(2021, 12, 28),
-          maxDate: DateTime(2021, 12, 28).add(const Duration(days: 365)),
+          weekdayStart: DateTime.tuesday,
+          minDate: DateTime.now(),
+          maxDate: DateTime.now().add(const Duration(days: 365)),
+          // minDate: DateTime(2021, 12, 28),
+          // maxDate: DateTime(2021, 12, 28).add(const Duration(days: 365)),
         ),
       ),
     );

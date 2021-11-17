@@ -16,9 +16,6 @@ A clean calendar widget with vertical scroll, locale and range selection date.
       <a href="https://github.com/rodrigodobbin"><img src="https://avatars.githubusercontent.com/u/3811222?v=4" width="100px"></img><br><sub><b>Rodrigo Dobbin Fellows</b></sub>
     </td>
     <td align="center">
-      <a href="https://github.com/LucienCorreia"><img src="https://avatars.githubusercontent.com/u/20744377?v=4" width="100px"></img><br><sub><b>Lucion Risso Correia</b></sub>
-    </td>
-    <td align="center">
       <a href="https://github.com/EduardoNatale"><img src="https://avatars.githubusercontent.com/u/40431768?v=4" width="100px"></img><br><sub><b>Eduardo Natale</b></sub>
     </td>
     <td align="center">
@@ -26,6 +23,9 @@ A clean calendar widget with vertical scroll, locale and range selection date.
     </td>
     <td align="center">
       <a href="https://github.com/fpizzicol"><img src="https://avatars.githubusercontent.com/u/10764810?v=4" width="100px"></img><br><sub><b>Filippo Pizzicola</b></sub>
+    </td>
+    <td align="center">
+      <a href="https://github.com/LucienCorreia"><img src="https://avatars.githubusercontent.com/u/20744377?v=4" width="100px"></img><br><sub><b>Lucian Risso Correia</b></sub>
     </td>
   </tr>
 </table>
