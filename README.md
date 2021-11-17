@@ -1,43 +1,83 @@
-# Scrollable clean calendar
+[![Pub](https://img.shields.io/pub/v/scrollable_clean_calendar.svg)](https://pub.dev/packages/scrollable_clean_calendar)
+![GitHub contributors](https://img.shields.io/github/contributors/FabioFiuza/scrollable_clean_calendar)
 
-A clean calendar widget with vertical scroll, locale, and range selection date.
+# Scrollable Clean Calendar
 
-## Instalation
+A clean calendar widget with vertical scroll, locale and range selection date.
 
-Add `scrollable_clean_calendar: 0.5.0` in your `pubspec.yaml`.
+![](assets/image1.png)
+![](assets/image2.png)
 
-## Locale
+## Contributors
 
-This calendar supports locales. To display the Calendar in desired language, use locale property. If you don't specify it, a default locale will be used.
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/rodrigodobbin"><img src="https://avatars.githubusercontent.com/u/3811222?v=4" width="100px"></img><br><sub><b>Rodrigo Dobbin Fellows</b></sub>
+    </td>
+    <td align="center">
+      <a href="https://github.com/LucienCorreia"><img src="https://avatars.githubusercontent.com/u/20744377?v=4" width="100px"></img><br><sub><b>Lucion Risso Correia</b></sub>
+    </td>
+    <td align="center">
+      <a href="https://github.com/EduardoNatale"><img src="https://avatars.githubusercontent.com/u/40431768?v=4" width="100px"></img><br><sub><b>Eduardo Natale</b></sub>
+    </td>
+    <td align="center">
+      <a href="https://github.com/FabioFiuza"><img src="https://avatars.githubusercontent.com/u/5648401?v=4" width="100px"></img><br><sub><b>Fabio Fiuza</b></sub>
+    </td>
+    <td align="center">
+      <a href="https://github.com/fpizzicol"><img src="https://avatars.githubusercontent.com/u/10764810?v=4" width="100px"></img><br><sub><b>Filippo Pizzicola</b></sub>
+    </td>
+  </tr>
+</table>
 
-Example `locale: 'pt'`
+## Installation
+
+Add
+
+```bash
+scrollable_clean_calendar: 1.0.0
+```
+
+to your `pubspec.yaml` and run
+
+```bash
+flutter pub get
+```
+
+in the project's main folder.
 
 ## Parameters
 
-| Name                            | Required | Type      | description                                                                                                |
-| ------------------------------- | -------- | --------- | ---------------------------------------------------------------------------------------------------------- |
-| minDate                         | true     | DateTime  | initial calendar date                                                                                      |
-| maxDate                         | true     | DateTime  | last calendar date                                                                                         |
-| isRangeMode                         | false     | bool  | if you want to select two dates value should be true. "Default is true"                                                                                         |
-| monthLabelAlign                         | false     | MainAxisAlignment  | Alignment of the Month text. "Default is MainAxisAlignment.center"                                                     |
-| onRangeSelected                 | false    | Function  | return two date selected                                                                                   |
-| onTapDate                       | false    | Function  | return the date selected                                                                                   |
-| dayLabelStyle                   | false    | Function  | Function to determine style day label                                                                      |
-| showDaysWeeks                   | false    | bool      | if false not show day of week label                                                                        |
-| monthLabelStyle                 | false    | TextStyle | Style month label                                                                                          |
-| dayWeekLabelStyle               | false    | TextStyle | Style day week label                                                                                       |
-| selectedDateColor               | false    | Color     | Color is selected date                                                                                     |
-| rangeSelectedDateColor          | false    | Color     | Color range of date selected                                                                               |
-| selectDateRadius                | false    | double    | Apply radius when selected two dates                                                                       |
-| renderPostAndPreviousMonthDates | false    | bool      | Show the dates of the first Month before the `minDate` and the dates of the last Month after the `maxDate` |
-| disabledDateColor               | false    | Color     | Color of the disabled dates                                                                                |
-| initialDateSelected             | false    | DateTime  | First date that is already selected when the calendar Init                                                 |
-| endDateSelected                 | false    | DateTime  | Last date that is already selected when the calendar Init                                                  |
-
-## Locale en
-
-[![Simulator-Screen-Shot-i-Phone-11-2020-11-26-at-14-38-24.png](https://i.postimg.cc/8znFXH9h/Simulator-Screen-Shot-i-Phone-11-2020-11-26-at-14-38-24.png)](https://postimg.cc/mPC2tQbD)
-
-## Locale pt
-
-[![Simulator-Screen-Shot-i-Phone-11-2020-11-26-at-14-38-53.png](https://i.postimg.cc/PqpCgDn0/Simulator-Screen-Shot-i-Phone-11-2020-11-26-at-14-38-53.png)](https://postimg.cc/v1y89cBv)
+| Parameter                         | Type                                                    | Default                                               | Description                                                                                                            |
+| :-------------------------------- | :------------------------------------------------------ | :---------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
+| locale                            | String                                                  | en                                                    | The language locale                                                                                                    |
+| scrollController                  | ScrollController                                        | null                                                  | Scroll controller                                                                                                      |
+| minDate                           | DateTime                                                | required                                              | Obrigatory: The mininimum date to show                                                                                 |
+| maxDate                           | DateTime                                                | required                                              | Obrigatory: The maximum date to show                                                                                   |
+| initialDateSelected               | DateTime                                                | null                                                  | An initial selected date                                                                                               |
+| endDateSelected                   | DateTime                                                | null                                                  | The end of selected range                                                                                              |
+| showWeekdays                      | bool                                                    | true                                                  | If is to show or not the weekdays in calendar                                                                          |
+| weekdayStart                      | int                                                     | DateTime.monday                                       | In what weekday position the calendar is going to start                                                                |
+| onDayTapped                       | Function(DateTime date)                                 | null                                                  | Function when a day is tapped                                                                                          |
+| onRangeSelected                   | Function(DateTime minDate, DateTime? maxDate)           | null                                                  | Function when a range is selected                                                                                      |
+| onPreviousMinDateTapped           | Function(DateTime date)                                 | null                                                  | When a date before the min date is tapped                                                                              |
+| onAfterMaxDateTapped              | Function(DateTime date)                                 | null                                                  | When a date after max date is tapped                                                                                   |
+| isRangeMode                       | bool                                                    | true                                                  | If the range is enabled                                                                                                |
+| layout                            | Layout                                                  | null                                                  | What layout (design) is going to be used. **_Important: layout is required if you don't use all the layout builders_** |
+| spaceBetweenMonthAndCalendar      | double                                                  | 24                                                    | The space between month and calendar                                                                                   |
+| spaceBetweenCalendars             | double                                                  | 24                                                    | The space between calendars                                                                                            |
+| calendarCrossAxisSpacing          | double                                                  | 4                                                     | The horizontal space in the calendar dates                                                                             |
+| calendarMainAxisSpacing           | double                                                  | 4                                                     | The vertical space in the calendar dates                                                                               |
+| padding                           | EdgeInsetsGeometry                                      | EdgeInsets.symmetric(horizontal: 16, vertical: 32)    | The parent padding                                                                                                     |
+| monthTextStyle                    | TextStyle                                               | Theme.of(context).textTheme.headline6                 | The label text style of month                                                                                          |
+| monthTextAlign                    | TextAlign                                               | TextAlign.left                                        | The label text align of month                                                                                          |
+| weekdayTextStyle                  | TextStyle                                               | Theme.of(context).textTheme.bodyText1                 | The label text align of month                                                                                          |
+| dayTextStyle                      | TextStyle                                               | Theme.of(context).textTheme.bodyText1                 | The label text style of day                                                                                            |
+| daySelectedBackgroundColor        | Color                                                   | Theme.of(context).colorScheme.primary                 | The day selected background color                                                                                      |
+| dayBackgroundColor                | Color                                                   | Theme.of(context).colorScheme.surface                 | The day background color                                                                                               |
+| daySelectedBackgroundColorBetween | Color                                                   | Theme.of(context).colorScheme.primary.withOpacity(.3) | The day selected background color that is between day selected edges                                                   |
+| dayDisableBackgroundColor         | Color                                                   | Theme.of(context).colorScheme.surface.withOpacity(.4) | The day disable background color                                                                                       |
+| dayRadius                         | double                                                  | 6                                                     | The radius of day items                                                                                                |
+| monthBuilder                      | Widget Function(BuildContext context, String month)     | null                                                  | A builder to make a customized month                                                                                   |
+| weekdayBuilder                    | Widget Function(BuildContext context, String weekday)   | null                                                  | A builder to make a customized weekday                                                                                 |
+| dayBuilder                        | Widget Function(BuildContext context, DayValues values) | null                                                  | A builder to make a customized day of calendar                                                                         |

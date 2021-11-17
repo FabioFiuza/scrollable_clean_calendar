@@ -36,8 +36,9 @@ class MyApp extends StatelessWidget {
           onRangeSelected: (firstDate, secondDate) {},
           onDayTapped: (date) {},
           locale: 'pt',
-          layout: Layout.BEAUTY,
-
+          layout: Layout.DEFAULT,
+          // initialDateSelected: DateTime(2022, 2, 3),
+          // endDateSelected: DateTime(2022, 2, 3),
           // calendarCrossAxisSpacing: 4,
           // calendarMainAxisSpacing: 4,
           // calendarCrossAxisSpacing: 0,

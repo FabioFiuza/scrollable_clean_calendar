@@ -1,6 +1,15 @@
+## [1.0.0] - 2021-11-17 (**Breakchanges**)
+
+- Now we are in the version 1.0.0. We have a lot of different things:
+  - Differents layout
+  - Customizable widgets
+  - Removing setState and using change notifier
+  - Disabled dates before min date and after max date
+  - Weekday start, in what weekday the calendar is going to start
+
 ## [0.5.0] - 2021-09-13
 
--  Add option to use calendar without date range, with only one date
+- Add option to use calendar without date range, with only one date
 
 ## [0.4.0] - 2021-03-09
 

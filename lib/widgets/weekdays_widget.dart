@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:scrollable_clean_calendar/src/clean_calendar_controller.dart';
+import 'package:scrollable_clean_calendar/controllers/clean_calendar_controller.dart';
 import 'package:scrollable_clean_calendar/utils/enums.dart';
 import 'package:scrollable_clean_calendar/utils/extensions.dart';
 
@@ -10,7 +10,7 @@ class WeekdaysWidget extends StatelessWidget {
   final String locale;
   final Layout? layout;
   final TextStyle? textStyle;
-  final Widget Function(BuildContext context, String weekDay)? weekDayBuilder;
+  final Widget Function(BuildContext context, String weekday)? weekdayBuilder;
 
   const WeekdaysWidget({
     Key? key,
@@ -18,7 +18,7 @@ class WeekdaysWidget extends StatelessWidget {
     required this.cleanCalendarController,
     required this.locale,
     required this.layout,
-    required this.weekDayBuilder,
+    required this.weekdayBuilder,
     required this.textStyle,
   }) : super(key: key);
 
@@ -34,8 +34,8 @@ class WeekdaysWidget extends StatelessWidget {
       children: List.generate(DateTime.daysPerWeek, (index) {
         final weekDay = cleanCalendarController.getDaysOfWeek(locale)[index];
 
-        if (weekDayBuilder != null) {
-          return weekDayBuilder!(context, weekDay);
+        if (weekdayBuilder != null) {
+          return weekdayBuilder!(context, weekDay);
         }
 
         return <Layout, Widget Function()>{
@@ -46,10 +46,10 @@ class WeekdaysWidget extends StatelessWidget {
     );
   }
 
-  Widget _pattern(BuildContext context, String weekDay) {
+  Widget _pattern(BuildContext context, String weekday) {
     return Center(
       child: Text(
-        weekDay.capitalize(),
+        weekday.capitalize(),
         style: textStyle ??
             Theme.of(context).textTheme.bodyText1!.copyWith(
                   color: Theme.of(context)
@@ -63,10 +63,10 @@ class WeekdaysWidget extends StatelessWidget {
     );
   }
 
-  Widget _beauty(BuildContext context, String weekDay) {
+  Widget _beauty(BuildContext context, String weekday) {
     return Center(
       child: Text(
-        weekDay.capitalize(),
+        weekday.capitalize(),
         style: textStyle ??
             Theme.of(context).textTheme.bodyText1!.copyWith(
                   color: Theme.of(context)
