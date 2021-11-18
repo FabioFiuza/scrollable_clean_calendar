@@ -8,7 +8,6 @@ import 'package:scrollable_clean_calendar/utils/enums.dart';
 import 'package:scrollable_clean_calendar/widgets/days_widget.dart';
 import 'package:scrollable_clean_calendar/widgets/month_widget.dart';
 import 'package:scrollable_clean_calendar/widgets/weekdays_widget.dart';
-import 'package:scrollable_clean_calendar/utils/extensions.dart';
 
 class ScrollableCleanCalendar extends StatefulWidget {
   /// The language locale
@@ -17,38 +16,8 @@ class ScrollableCleanCalendar extends StatefulWidget {
   /// Scroll controller
   final ScrollController? scrollController;
 
-  /// Obrigatory: The mininimum date to show
-  final DateTime minDate;
-
-  /// Obrigatory: The maximum date to show
-  final DateTime maxDate;
-
-  /// An initial selected date
-  final DateTime? initialDateSelected;
-
-  /// The end of selected range
-  final DateTime? endDateSelected;
-
   /// If is to show or not the weekdays in calendar
   final bool showWeekdays;
-
-  /// In what weekday position the calendar is going to start
-  final int weekdayStart;
-
-  /// Function when a day is tapped
-  final Function(DateTime date)? onDayTapped;
-
-  /// Function when a range is selected
-  final Function(DateTime minDate, DateTime? maxDate)? onRangeSelected;
-
-  /// When a date before the min date is tapped
-  final Function(DateTime date)? onPreviousMinDateTapped;
-
-  /// When a date after max date is tapped
-  final Function(DateTime date)? onAfterMaxDateTapped;
-
-  /// If the range is enabled
-  final bool isRangeMode;
 
   /// What layout (design) is going to be used
   final Layout? layout;
@@ -104,20 +73,13 @@ class ScrollableCleanCalendar extends StatefulWidget {
   /// A builder to make a customized day of calendar
   final Widget Function(BuildContext context, DayValues values)? dayBuilder;
 
+  /// The controller of ScrollableCleanCalendar
+  final CleanCalendarController calendarController;
+
   const ScrollableCleanCalendar({
     this.locale = 'en',
     this.scrollController,
-    required this.minDate,
-    required this.maxDate,
-    this.initialDateSelected,
-    this.endDateSelected,
     this.showWeekdays = true,
-    this.weekdayStart = DateTime.monday,
-    this.onDayTapped,
-    this.onRangeSelected,
-    this.onPreviousMinDateTapped,
-    this.onAfterMaxDateTapped,
-    this.isRangeMode = true,
     this.layout,
     this.calendarCrossAxisSpacing = 4,
     this.calendarMainAxisSpacing = 4,
@@ -136,6 +98,7 @@ class ScrollableCleanCalendar extends StatefulWidget {
     this.dayDisableBackgroundColor,
     this.dayTextStyle,
     this.dayRadius = 6,
+    required this.calendarController,
   }) : assert(layout != null ||
             (monthBuilder != null &&
                 weekdayBuilder != null &&
@@ -147,45 +110,9 @@ class ScrollableCleanCalendar extends StatefulWidget {
 }
 
 class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
-  late CleanCalendarController _cleanCalendarController;
-
   @override
   void initState() {
     initializeDateFormatting();
-    List<DateTime> months = [];
-
-    DateTime currentDate = DateTime(widget.minDate.year, widget.minDate.month);
-    months.add(currentDate);
-
-    while (!(currentDate.year == widget.maxDate.year &&
-        currentDate.month == widget.maxDate.month)) {
-      currentDate = DateTime(currentDate.year, currentDate.month + 1);
-      months.add(currentDate);
-    }
-
-    _cleanCalendarController = CleanCalendarController(
-      startWeekDay: widget.weekdayStart,
-      months: months,
-      rangeMode: widget.isRangeMode,
-      onRangeSelected: widget.onRangeSelected,
-      onTapDate: widget.onDayTapped,
-      maxDate: widget.maxDate,
-      minDate: widget.minDate,
-    );
-
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      if (widget.initialDateSelected != null &&
-          (widget.initialDateSelected!.isAfter(widget.minDate) ||
-              widget.initialDateSelected!.isSameDay(widget.minDate))) {
-        _cleanCalendarController.onDayClick(widget.initialDateSelected!);
-      }
-
-      if (widget.endDateSelected != null &&
-          (widget.endDateSelected!.isBefore(widget.maxDate) ||
-              widget.endDateSelected!.isSameDay(widget.maxDate))) {
-        _cleanCalendarController.onDayClick(widget.endDateSelected!);
-      }
-    });
 
     super.initState();
   }
@@ -200,9 +127,9 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
       //     (MediaQuery.of(context).size.width / DateTime.daysPerWeek) * 6,
       separatorBuilder: (_, __) =>
           SizedBox(height: widget.spaceBetweenCalendars),
-      itemCount: _cleanCalendarController.months.length,
+      itemCount: widget.calendarController.months.length,
       itemBuilder: (context, index) {
-        final month = _cleanCalendarController.months[index];
+        final month = widget.calendarController.months[index];
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -223,24 +150,22 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
               children: [
                 WeekdaysWidget(
                   showWeekdays: widget.showWeekdays,
-                  cleanCalendarController: _cleanCalendarController,
+                  cleanCalendarController: widget.calendarController,
                   locale: widget.locale,
                   layout: widget.layout,
                   weekdayBuilder: widget.weekdayBuilder,
                   textStyle: widget.weekdayTextStyle,
                 ),
                 AnimatedBuilder(
-                  animation: _cleanCalendarController,
+                  animation: widget.calendarController,
                   builder: (_, __) {
                     return DaysWidget(
                       month: month,
-                      cleanCalendarController: _cleanCalendarController,
+                      cleanCalendarController: widget.calendarController,
                       calendarCrossAxisSpacing: widget.calendarCrossAxisSpacing,
                       calendarMainAxisSpacing: widget.calendarMainAxisSpacing,
                       layout: widget.layout,
                       dayBuilder: widget.dayBuilder,
-                      onAfterMaxDateTapped: widget.onAfterMaxDateTapped,
-                      onPreviousMinDateTapped: widget.onPreviousMinDateTapped,
                       backgroundColor: widget.dayBackgroundColor,
                       selectedBackgroundColor:
                           widget.daySelectedBackgroundColor,

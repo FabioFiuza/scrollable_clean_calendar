@@ -3,28 +3,75 @@ import 'package:intl/intl.dart';
 import 'package:scrollable_clean_calendar/utils/extensions.dart';
 
 class CleanCalendarController extends ChangeNotifier {
-  final int startWeekDay;
-  final bool rangeMode;
-  final List<DateTime> months;
+  /// Obrigatory: The mininimum date to show
   final DateTime minDate;
+
+  /// Obrigatory: The maximum date to show
   final DateTime maxDate;
-  final Function(DateTime date)? onTapDate;
+
+  /// If the range is enabled
+  final bool rangeMode;
+
+  /// In what weekday position the calendar is going to start
+  final int weekdayStart;
+
+  /// Function when a day is tapped
+  final Function(DateTime date)? onDayTapped;
+
+  /// Function when a range is selected
   final Function(DateTime minDate, DateTime? maxDate)? onRangeSelected;
 
-  late int endWeekDay;
+  /// When a date before the min date is tapped
+  final Function(DateTime date)? onPreviousMinDateTapped;
+
+  /// When a date after max date is tapped
+  final Function(DateTime date)? onAfterMaxDateTapped;
+
+  /// An initial selected date
+  final DateTime? initialDateSelected;
+
+  /// The end of selected range
+  final DateTime? endDateSelected;
+
+  late int weekdayEnd;
+  List<DateTime> months = [];
 
   CleanCalendarController({
-    required this.months,
-    required this.rangeMode,
-    required this.onTapDate,
-    required this.onRangeSelected,
     required this.minDate,
     required this.maxDate,
-    this.startWeekDay = DateTime.sunday,
-  })  : assert(startWeekDay <= DateTime.sunday),
-        assert(startWeekDay >= DateTime.monday) {
-    final x = startWeekDay - 1;
-    endWeekDay = x == 0 ? 7 : x;
+    this.rangeMode = true,
+    this.endDateSelected,
+    this.initialDateSelected,
+    this.onDayTapped,
+    this.onRangeSelected,
+    this.onAfterMaxDateTapped,
+    this.onPreviousMinDateTapped,
+    this.weekdayStart = DateTime.monday,
+  })  : assert(weekdayStart <= DateTime.sunday),
+        assert(weekdayStart >= DateTime.monday) {
+    final x = weekdayStart - 1;
+    weekdayEnd = x == 0 ? 7 : x;
+
+    DateTime currentDate = DateTime(minDate.year, minDate.month);
+    months.add(currentDate);
+
+    while (!(currentDate.year == maxDate.year &&
+        currentDate.month == maxDate.month)) {
+      currentDate = DateTime(currentDate.year, currentDate.month + 1);
+      months.add(currentDate);
+    }
+
+    if (initialDateSelected != null &&
+        (initialDateSelected!.isAfter(minDate) ||
+            initialDateSelected!.isSameDay(minDate))) {
+      onDayClick(initialDateSelected!, update: false);
+    }
+
+    if (endDateSelected != null &&
+        (endDateSelected!.isBefore(maxDate) ||
+            endDateSelected!.isSameDay(maxDate))) {
+      onDayClick(endDateSelected!, update: false);
+    }
   }
 
   DateTime? rangeMinDate;
@@ -33,7 +80,7 @@ class CleanCalendarController extends ChangeNotifier {
   List<String> getDaysOfWeek([String locale = 'pt']) {
     var today = DateTime.now();
 
-    while (today.weekday != startWeekDay) {
+    while (today.weekday != weekdayStart) {
       today = today.subtract(const Duration(days: 1));
     }
     final dateFormat = DateFormat(DateFormat.ABBR_WEEKDAY, locale);
@@ -50,7 +97,7 @@ class CleanCalendarController extends ChangeNotifier {
     return daysOfWeek;
   }
 
-  void onDayClick(DateTime date) {
+  void onDayClick(DateTime date, {bool update = true}) {
     if (rangeMode) {
       if (rangeMinDate == null || rangeMaxDate != null) {
         rangeMinDate = date;
@@ -66,14 +113,23 @@ class CleanCalendarController extends ChangeNotifier {
       rangeMaxDate = date;
     }
 
-    notifyListeners();
+    if (update) {
+      notifyListeners();
+    }
 
-    if (onTapDate != null) {
-      onTapDate!(date);
+    if (onDayTapped != null) {
+      onDayTapped!(date);
     }
 
     if (onRangeSelected != null) {
       onRangeSelected!(rangeMinDate!, rangeMaxDate);
     }
+  }
+
+  void clearSelectedDates() {
+    rangeMaxDate = null;
+    rangeMinDate = null;
+
+    notifyListeners();
   }
 }

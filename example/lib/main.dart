@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scrollable_clean_calendar/controllers/clean_calendar_controller.dart';
 import 'package:scrollable_clean_calendar/scrollable_clean_calendar.dart';
 import 'package:scrollable_clean_calendar/utils/enums.dart';
 
@@ -7,6 +8,18 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  final calendarController = CleanCalendarController(
+    minDate: DateTime.now(),
+    maxDate: DateTime.now().add(const Duration(days: 365)),
+    onRangeSelected: (firstDate, secondDate) {},
+    onDayTapped: (date) {},
+    onPreviousMinDateTapped: (date) {},
+    onAfterMaxDateTapped: (date) {},
+    weekdayStart: DateTime.monday,
+    // initialDateSelected: DateTime(2022, 2, 3),
+    // endDateSelected: DateTime(2022, 2, 3),
+  );
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -31,52 +44,19 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Scrollable Clean Calendar'),
+          actions: [
+            IconButton(
+              onPressed: () {
+                calendarController.clearSelectedDates();
+              },
+              icon: const Icon(Icons.clear),
+            )
+          ],
         ),
         body: ScrollableCleanCalendar(
-          onRangeSelected: (firstDate, secondDate) {},
-          onDayTapped: (date) {},
-          onPreviousMinDateTapped: (date) {},
-          onAfterMaxDateTapped: (date) {},
-          locale: 'pl_PL',
-          layout: Layout.DEFAULT,
-          // initialDateSelected: DateTime(2022, 2, 3),
-          // endDateSelected: DateTime(2022, 2, 3),
-          // calendarCrossAxisSpacing: 4,
-          // calendarMainAxisSpacing: 4,
-          // calendarCrossAxisSpacing: 0,
-          // dayBackgroundColor: Colors.white,
-          // dayDisableBackgroundColor: Colors.black,
-          // daySelectedBackgroundColor: Colors.indigo,
-          // monthTextStyle: const TextStyle(
-          //   fontSize: 24,
-          //   fontWeight: FontWeight.bold,
-          // ),
-          // daySelectedBackgroundColorBetween: Colors.red.withOpacity(.3),
-          // showWeekdays: false,
-          // monthBuilder: (context, value) {
-          //   return Text(
-          //     value.toUpperCase(),
-          // style: const TextStyle(
-          //   fontSize: 24,
-          //   fontWeight: FontWeight.bold,
-          // ),
-          //   );
-          // },
-          // weekdayBuilder: (context, value) {
-          //   return Text(value);
-          // },
-          // dayBuilder: (context, values) {
-          //   return Container(
-          //     color: values.isSelected ? Colors.yellow : Colors.transparent,
-          //     alignment: Alignment.center,
-          //     child: Text(values.text),
-          //   );
-          // },
-          weekdayStart: DateTime.tuesday,
-          minDate: DateTime.now(),
-          maxDate: DateTime.now().add(const Duration(days: 365)),
-          // minDate: DateTime(2021, 12, 28),
-          // maxDate: DateTime(2021, 12, 28).add(const Duration(days: 365)),
+          calendarController: calendarController,
+          layout: Layout.BEAUTY,
+          calendarCrossAxisSpacing: 0,
         ),
       ),
     );

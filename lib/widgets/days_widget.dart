@@ -7,8 +7,6 @@ import 'package:scrollable_clean_calendar/utils/extensions.dart';
 class DaysWidget extends StatelessWidget {
   final CleanCalendarController cleanCalendarController;
   final DateTime month;
-  final Function(DateTime date)? onPreviousMinDateTapped;
-  final Function(DateTime date)? onAfterMaxDateTapped;
   final double calendarCrossAxisSpacing;
   final double calendarMainAxisSpacing;
   final Layout? layout;
@@ -31,8 +29,6 @@ class DaysWidget extends StatelessWidget {
     required this.calendarMainAxisSpacing,
     required this.layout,
     required this.dayBuilder,
-    required this.onPreviousMinDateTapped,
-    required this.onAfterMaxDateTapped,
     required this.selectedBackgroundColor,
     required this.backgroundColor,
     required this.selectedBackgroundColorBetween,
@@ -49,7 +45,7 @@ class DaysWidget extends StatelessWidget {
 
     // What it means? The first weekday does not change, but the start weekday have changed,
     // so in the layout we need to change where the calendar first day is going to start.
-    int monthPositionStartDay = (cleanCalendarController.startWeekDay -
+    int monthPositionStartDay = (cleanCalendarController.weekdayStart -
             DateTime.daysPerWeek -
             DateTime(month.year, month.month).weekday)
         .abs();
@@ -94,8 +90,8 @@ class DaysWidget extends StatelessWidget {
 
         final dayValues = DayValues(
           day: day,
-          isFirstDayOfWeek: day.weekday == cleanCalendarController.startWeekDay,
-          isLastDayOfWeek: day.weekday == cleanCalendarController.endWeekDay,
+          isFirstDayOfWeek: day.weekday == cleanCalendarController.weekdayStart,
+          isLastDayOfWeek: day.weekday == cleanCalendarController.weekdayEnd,
           isSelected: isSelected,
           maxDate: cleanCalendarController.maxDate,
           minDate: cleanCalendarController.minDate,
@@ -117,12 +113,12 @@ class DaysWidget extends StatelessWidget {
           onTap: () {
             if (day.isBefore(cleanCalendarController.minDate) &&
                 !day.isSameDay(cleanCalendarController.minDate)) {
-              if (onPreviousMinDateTapped != null) {
-                onPreviousMinDateTapped!(day);
+              if (cleanCalendarController.onPreviousMinDateTapped != null) {
+                cleanCalendarController.onPreviousMinDateTapped!(day);
               }
             } else if (day.isAfter(cleanCalendarController.maxDate)) {
-              if (onAfterMaxDateTapped != null) {
-                onAfterMaxDateTapped!(day);
+              if (cleanCalendarController.onAfterMaxDateTapped != null) {
+                cleanCalendarController.onAfterMaxDateTapped!(day);
               }
             } else {
               cleanCalendarController.onDayClick(day);

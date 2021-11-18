@@ -48,21 +48,14 @@ in the project's main folder.
 
 ## Parameters
 
+### ScrollableCleanCalendar
+
 | Parameter                         | Type                                                    | Default                                               | Description                                                                                                            |
 | :-------------------------------- | :------------------------------------------------------ | :---------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
+| calendarController                | CleanCalendarController                                 | **required**                                          | The controller of ScrollableCleanCalendar                                                                              |
 | locale                            | String                                                  | en                                                    | The language locale                                                                                                    |
 | scrollController                  | ScrollController                                        | null                                                  | Scroll controller                                                                                                      |
-| minDate                           | DateTime                                                | required                                              | Obrigatory: The mininimum date to show                                                                                 |
-| maxDate                           | DateTime                                                | required                                              | Obrigatory: The maximum date to show                                                                                   |
-| initialDateSelected               | DateTime                                                | null                                                  | An initial selected date                                                                                               |
-| endDateSelected                   | DateTime                                                | null                                                  | The end of selected range                                                                                              |
 | showWeekdays                      | bool                                                    | true                                                  | If is to show or not the weekdays in calendar                                                                          |
-| weekdayStart                      | int                                                     | DateTime.monday                                       | In what weekday position the calendar is going to start                                                                |
-| onDayTapped                       | Function(DateTime date)                                 | null                                                  | Function when a day is tapped                                                                                          |
-| onRangeSelected                   | Function(DateTime minDate, DateTime? maxDate)           | null                                                  | Function when a range is selected                                                                                      |
-| onPreviousMinDateTapped           | Function(DateTime date)                                 | null                                                  | When a date before the min date is tapped                                                                              |
-| onAfterMaxDateTapped              | Function(DateTime date)                                 | null                                                  | When a date after max date is tapped                                                                                   |
-| isRangeMode                       | bool                                                    | true                                                  | If the range is enabled                                                                                                |
 | layout                            | Layout                                                  | null                                                  | What layout (design) is going to be used. **_Important: layout is required if you don't use all the layout builders_** |
 | spaceBetweenMonthAndCalendar      | double                                                  | 24                                                    | The space between month and calendar                                                                                   |
 | spaceBetweenCalendars             | double                                                  | 24                                                    | The space between calendars                                                                                            |
@@ -81,3 +74,41 @@ in the project's main folder.
 | monthBuilder                      | Widget Function(BuildContext context, String month)     | null                                                  | A builder to make a customized month                                                                                   |
 | weekdayBuilder                    | Widget Function(BuildContext context, String weekday)   | null                                                  | A builder to make a customized weekday                                                                                 |
 | dayBuilder                        | Widget Function(BuildContext context, DayValues values) | null                                                  | A builder to make a customized day of calendar                                                                         |
+
+### CleanCalendarController
+
+| Parameter               | Type                                          | Default         | Description                                             |
+| :---------------------- | :-------------------------------------------- | :-------------- | :------------------------------------------------------ |
+| minDate                 | DateTime                                      | **required**    | Obrigatory: The mininimum date to show                  |
+| maxDate                 | DateTime                                      | **required**    | Obrigatory: The maximum date to show                    |
+| initialDateSelected     | DateTime                                      | null            | An initial selected date                                |
+| endDateSelected         | DateTime                                      | null            | The end of selected range                               |
+| weekdayStart            | int                                           | DateTime.monday | In what weekday position the calendar is going to start |
+| onDayTapped             | Function(DateTime date)                       | null            | Function when a day is tapped                           |
+| onRangeSelected         | Function(DateTime minDate, DateTime? maxDate) | null            | Function when a range is selected                       |
+| onPreviousMinDateTapped | Function(DateTime date)                       | null            | When a date before the min date is tapped               |
+| onAfterMaxDateTapped    | Function(DateTime date)                       | null            | When a date after max date is tapped                    |
+| rangeMode               | bool                                          | true            | If the range is enabled                                 |
+
+## Layout.DEFAULT
+
+![](assets/image2.png)
+
+```dart
+ScrollableCleanCalendar(
+  calendarController: calendarController,
+  layout: Layout.DEFAULT,
+),
+```
+
+## Layout.BEAUTY
+
+![](assets/image1.png)
+
+```dart
+ScrollableCleanCalendar(
+  calendarController: calendarController,
+  layout: Layout.BEAUTY,
+  calendarCrossAxisSpacing: 0,
+),
+```
