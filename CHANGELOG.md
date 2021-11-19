@@ -1,4 +1,4 @@
-## [1.0.0] - 2021-11-18 (**Breakchanges**)
+## [1.0.0] - 2021-11-19 (**Breakchanges**)
 
 - Now we are in the version 1.0.0. We have a lot of different things:
   - Differents layout
