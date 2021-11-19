@@ -1,0 +1,20 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - analysis_options.yaml
+
+linter:
+  rules:
+    public_member_api_docs: false
+    type_annotate_public_apis: false
+    lines_longer_than_80_chars: false
+    use_setters_to_change_properties: false
+    avoid_classes_with_only_static_members: false
+    avoid_equals_and_hash_code_on_mutable_classes: false
+    one_member_abstracts: false
+    file_names: false
+    use_key_in_widget_constructors: false
+    directives_ordering: false
+    avoid_returning_null_for_void: false
+    constant_identifier_names: false

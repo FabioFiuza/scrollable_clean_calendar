@@ -1,3 +1,12 @@
+## [1.0.0] - 2021-11-19 (**Breakchanges**)
+
+- Now we are in the version 1.0.0. We have a lot of different things:
+  - Differents layout
+  - Customizable widgets
+  - Removing setState and using change notifier
+  - Disabled dates before min date and after max date
+  - Weekday start, in what weekday the calendar is going to start
+
 ## [0.5.2] - 2021-09-13
 
 - Fix Date format in languages that have a more complex variation like Polish.

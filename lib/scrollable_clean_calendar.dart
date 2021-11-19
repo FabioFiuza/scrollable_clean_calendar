@@ -2,74 +2,107 @@ library scrollable_clean_calendar;
 
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl.dart';
-import 'package:scrollable_clean_calendar/src/clean_calendar_controller.dart';
-import 'package:scrollable_clean_calendar/src/week_helper.dart';
-import 'package:scrollable_clean_calendar/utils/date_models.dart';
-
-import 'src/week_helper.dart';
-
-extension StringExtension on String {
-  String capitalize() {
-    return "${this[0].toUpperCase()}${this.substring(1)}";
-  }
-}
-
-typedef RangeDate = Function(DateTime minDate, DateTime? maxDate);
-typedef SelectDate = Function(DateTime date);
-typedef TextStyleFunction = Function(bool isSelected);
+import 'package:scrollable_clean_calendar/models/day_values_model.dart';
+import 'package:scrollable_clean_calendar/controllers/clean_calendar_controller.dart';
+import 'package:scrollable_clean_calendar/utils/enums.dart';
+import 'package:scrollable_clean_calendar/widgets/days_widget.dart';
+import 'package:scrollable_clean_calendar/widgets/month_widget.dart';
+import 'package:scrollable_clean_calendar/widgets/weekdays_widget.dart';
 
 class ScrollableCleanCalendar extends StatefulWidget {
-  ScrollableCleanCalendar({
-    this.locale = 'en',
-    required this.minDate,
-    required this.maxDate,
-    this.isRangeMode = true,
-    this.onRangeSelected,
-    this.showDaysWeeks = true,
-    this.monthLabelStyle,
-    this.monthLabelAlign = MainAxisAlignment.center,
-    this.dayLabelStyle,
-    this.dayWeekLabelStyle,
-    this.selectedDateColor = Colors.indigo,
-    this.rangeSelectedDateColor = Colors.blue,
-    this.selectDateRadius = 15,
-    this.onTapDate,
-    this.renderPostAndPreviousMonthDates = false,
-    this.disabledDateColor = Colors.grey,
-    this.startWeekDay = DateTime.monday,
-    this.initialDateSelected,
-    this.endDateSelected,
-    this.scrollController,
-  });
-
-  final ScrollController? scrollController;
-  final bool isRangeMode;
+  /// The language locale
   final String locale;
-  final bool showDaysWeeks;
-  final bool renderPostAndPreviousMonthDates;
-  final DateTime minDate;
-  final DateTime maxDate;
-  final DateTime? initialDateSelected;
-  final DateTime? endDateSelected;
 
-  /// Esse parametro sera habilitado em futuras versoes
-  @deprecated
-  final int startWeekDay;
+  /// Scroll controller
+  final ScrollController? scrollController;
 
-  final double selectDateRadius;
+  /// If is to show or not the weekdays in calendar
+  final bool showWeekdays;
 
-  final RangeDate? onRangeSelected;
-  final TextStyleFunction? dayLabelStyle;
-  final SelectDate? onTapDate;
+  /// What layout (design) is going to be used
+  final Layout? layout;
 
-  ///Styles
-  final TextStyle? monthLabelStyle;
-  final TextStyle? dayWeekLabelStyle;
-  final Color selectedDateColor;
-  final Color rangeSelectedDateColor;
-  final Color disabledDateColor;
-  final MainAxisAlignment monthLabelAlign;
+  /// The space between month and calendar
+  final double spaceBetweenMonthAndCalendar;
+
+  /// The space between calendars
+  final double spaceBetweenCalendars;
+
+  /// The horizontal space in the calendar dates
+  final double calendarCrossAxisSpacing;
+
+  /// The vertical space in the calendar dates
+  final double calendarMainAxisSpacing;
+
+  /// The parent padding
+  final EdgeInsetsGeometry? padding;
+
+  /// The label text style of month
+  final TextStyle? monthTextStyle;
+
+  /// The label text align of month
+  final TextAlign? monthTextAlign;
+
+  /// The label text align of month
+  final TextStyle? weekdayTextStyle;
+
+  /// The label text style of day
+  final TextStyle? dayTextStyle;
+
+  /// The day selected background color
+  final Color? daySelectedBackgroundColor;
+
+  /// The day background color
+  final Color? dayBackgroundColor;
+
+  /// The day selected background color that is between day selected edges
+  final Color? daySelectedBackgroundColorBetween;
+
+  /// The day disable background color
+  final Color? dayDisableBackgroundColor;
+
+  /// The radius of day items
+  final double dayRadius;
+
+  /// A builder to make a customized month
+  final Widget Function(BuildContext context, String month)? monthBuilder;
+
+  /// A builder to make a customized weekday
+  final Widget Function(BuildContext context, String weekday)? weekdayBuilder;
+
+  /// A builder to make a customized day of calendar
+  final Widget Function(BuildContext context, DayValues values)? dayBuilder;
+
+  /// The controller of ScrollableCleanCalendar
+  final CleanCalendarController calendarController;
+
+  const ScrollableCleanCalendar({
+    this.locale = 'en',
+    this.scrollController,
+    this.showWeekdays = true,
+    this.layout,
+    this.calendarCrossAxisSpacing = 4,
+    this.calendarMainAxisSpacing = 4,
+    this.spaceBetweenCalendars = 24,
+    this.spaceBetweenMonthAndCalendar = 24,
+    this.padding,
+    this.monthBuilder,
+    this.weekdayBuilder,
+    this.dayBuilder,
+    this.monthTextAlign,
+    this.monthTextStyle,
+    this.weekdayTextStyle,
+    this.daySelectedBackgroundColor,
+    this.dayBackgroundColor,
+    this.daySelectedBackgroundColorBetween,
+    this.dayDisableBackgroundColor,
+    this.dayTextStyle,
+    this.dayRadius = 6,
+    required this.calendarController,
+  }) : assert(layout != null ||
+            (monthBuilder != null &&
+                weekdayBuilder != null &&
+                dayBuilder != null));
 
   @override
   _ScrollableCleanCalendarState createState() =>
@@ -77,299 +110,78 @@ class ScrollableCleanCalendar extends StatefulWidget {
 }
 
 class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
-  CleanCalendarController? _cleanCalendarController;
-
-  List<Month>? months;
-  DateTime? rangeMinDate;
-  DateTime? rangeMaxDate;
-  DateTime? _minDate;
-  DateTime? _maxDate;
-
   @override
   void initState() {
     initializeDateFormatting();
-
-    final _minDateDay =
-        widget.renderPostAndPreviousMonthDates ? 1 : widget.minDate.day;
-    final _maxDateDay = widget.renderPostAndPreviousMonthDates
-        ? WeekHelper.daysPerMonth(widget.maxDate.year)[widget.maxDate.month - 1]
-        : widget.maxDate.day;
-
-    _minDate = DateTime(widget.minDate.year, widget.minDate.month, _minDateDay);
-    _maxDate = DateTime(
-        widget.maxDate.year, widget.maxDate.month, _maxDateDay, 23, 59, 00);
-    months = WeekHelper.extractWeeks(_minDate!, _maxDate!, widget.startWeekDay);
-
-    _cleanCalendarController =
-        CleanCalendarController(startWeekDay: widget.startWeekDay);
-
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      if (widget.initialDateSelected != null &&
-          (widget.initialDateSelected!.isAfter(widget.minDate) ||
-              widget.initialDateSelected!.isSameDay(widget.minDate))) {
-        _onDayClick(widget.initialDateSelected!);
-      }
-
-      if (widget.endDateSelected != null &&
-          (widget.endDateSelected!.isBefore(widget.maxDate) ||
-              widget.endDateSelected!.isSameDay(widget.maxDate))) {
-        _onDayClick(widget.endDateSelected!);
-      }
-    });
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ListView.separated(
       controller: widget.scrollController,
-      cacheExtent:
-          (MediaQuery.of(context).size.width / DateTime.daysPerWeek) * 6,
-      itemCount: months!.length,
+      padding: widget.padding ??
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+      // cacheExtent:
+      //     (MediaQuery.of(context).size.width / DateTime.daysPerWeek) * 6,
+      separatorBuilder: (_, __) =>
+          SizedBox(height: widget.spaceBetweenCalendars),
+      itemCount: widget.calendarController.months.length,
       itemBuilder: (context, index) {
-        final month = months![index];
+        final month = widget.calendarController.months[index];
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
-          child: Column(
-            children: [
-              _buildMonthLabelRow(month, context),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                child: Table(
-                  key: ValueKey('Calendar$index'),
-                  children: [
-                    _buildDayWeeksRow(context),
-                    ...month.weeks.map(
-                      (Week week) {
-                        DateTime firstDay = week.firstDay;
-
-                        return _buildDaysRow(week, firstDay, context);
-                      },
-                    ).toList(growable: false),
-                  ],
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: double.maxFinite,
+              child: MonthWidget(
+                month: month,
+                locale: widget.locale,
+                layout: widget.layout,
+                monthBuilder: widget.monthBuilder,
+                textAlign: widget.monthTextAlign,
+                textStyle: widget.monthTextStyle,
+              ),
+            ),
+            SizedBox(height: widget.spaceBetweenMonthAndCalendar),
+            Column(
+              children: [
+                WeekdaysWidget(
+                  showWeekdays: widget.showWeekdays,
+                  cleanCalendarController: widget.calendarController,
+                  locale: widget.locale,
+                  layout: widget.layout,
+                  weekdayBuilder: widget.weekdayBuilder,
+                  textStyle: widget.weekdayTextStyle,
                 ),
-              )
-            ],
-          ),
+                AnimatedBuilder(
+                  animation: widget.calendarController,
+                  builder: (_, __) {
+                    return DaysWidget(
+                      month: month,
+                      cleanCalendarController: widget.calendarController,
+                      calendarCrossAxisSpacing: widget.calendarCrossAxisSpacing,
+                      calendarMainAxisSpacing: widget.calendarMainAxisSpacing,
+                      layout: widget.layout,
+                      dayBuilder: widget.dayBuilder,
+                      backgroundColor: widget.dayBackgroundColor,
+                      selectedBackgroundColor:
+                          widget.daySelectedBackgroundColor,
+                      selectedBackgroundColorBetween:
+                          widget.daySelectedBackgroundColorBetween,
+                      disableBackgroundColor: widget.dayDisableBackgroundColor,
+                      radius: widget.dayRadius,
+                      textStyle: widget.dayTextStyle,
+                    );
+                  },
+                )
+              ],
+            )
+          ],
         );
       },
     );
-  }
-
-  TableRow _buildDaysRow(Week week, DateTime firstDay, BuildContext context) {
-    // _cleanCalendarController.dayOfWeek()
-    return TableRow(
-      children: List<Widget>.generate(
-        DateTime.daysPerWeek,
-        (int position) {
-          DateTime day = DateTime(
-              week.firstDay.year,
-              week.firstDay.month,
-              firstDay.day +
-                  (position - (firstDay.weekday - widget.startWeekDay)));
-
-          final dayIsBeforeMinDate =
-              day.isBefore(widget.minDate) && !day.isSameDay(widget.minDate);
-          final dayIsAfterMaxDate =
-              day.isAfter(widget.maxDate) && !day.isSameDay(widget.maxDate);
-
-          if ((position + widget.startWeekDay) < week.firstDay.weekday ||
-              (position + widget.startWeekDay) > week.lastDay.weekday ||
-              day.isBefore(_minDate!) ||
-              day.isAfter(_maxDate!)) {
-            return SizedBox.shrink();
-          } else if (dayIsBeforeMinDate || dayIsAfterMaxDate) {
-            return TableCell(
-              key:
-                  ValueKey(DateFormat('dd-MM-yyyy', widget.locale).format(day)),
-              child: Container(
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8.0,
-                    ),
-                    child: Text(
-                      DateFormat('d', widget.locale).format(day),
-                      style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                            color: widget.disabledDateColor,
-                          ),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          } else {
-            bool rangeFeatureEnabled = rangeMinDate != null;
-
-            bool isSelected = false;
-
-            if (rangeFeatureEnabled) {
-              if (rangeMinDate != null && rangeMaxDate != null) {
-                isSelected = day.isSameDayOrAfter(rangeMinDate!) &&
-                    day.isSameDayOrBefore(rangeMaxDate!);
-              } else {
-                isSelected = day.isAtSameMomentAs(rangeMinDate!);
-              }
-            }
-
-            return TableCell(
-              key:
-                  ValueKey(DateFormat('dd-MM-yyyy', widget.locale).format(day)),
-              child: GestureDetector(
-                onTap: () {
-                  _onDayClick(day);
-                },
-                child: Container(
-                  key: ValueKey(
-                      '${DateFormat('dd-MM-yyyy', widget.locale).format(day)}_container'),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.horizontal(
-                      left: Radius.circular(
-                        _getRadiusRangeMinDate(isSelected, day),
-                      ),
-                      right: Radius.circular(
-                        _getRadiusRangeMaxDate(isSelected, day),
-                      ),
-                    ),
-                    color: _getBackgroundColor(isSelected, day),
-                  ),
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8.0,
-                      ),
-                      child: Text(
-                        DateFormat('d', widget.locale).format(day),
-                        style: widget.dayLabelStyle != null
-                            ? widget.dayLabelStyle!(isSelected)
-                            : Theme.of(context).textTheme.bodyText2!.copyWith(
-                                  color:
-                                      isSelected ? Colors.white : Colors.black,
-                                ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          }
-        },
-        growable: false,
-      ),
-    );
-  }
-
-  double _getRadiusRangeMinDate(bool isSelected, DateTime day) {
-    if (isSelected) {
-      if (day.compareTo(rangeMinDate!) == 0 && rangeMaxDate != null) {
-        return widget.selectDateRadius;
-      }
-    }
-    return 0;
-  }
-
-  double _getRadiusRangeMaxDate(bool isSelected, DateTime day) {
-    if (isSelected) {
-      if (rangeMaxDate != null && day.compareTo(rangeMaxDate!) == 0) {
-        return widget.selectDateRadius;
-      }
-    }
-    return 0;
-  }
-
-  Color _getBackgroundColor(bool isSelected, DateTime day) {
-    if (isSelected) {
-      if (day.compareTo(rangeMinDate!) == 0 ||
-          (rangeMaxDate != null && day.compareTo(rangeMaxDate!) == 0)) {
-        return widget.selectedDateColor;
-      } else {
-        return widget.rangeSelectedDateColor;
-      }
-    }
-    return Colors.transparent;
-  }
-
-  TableRow _buildDayWeeksRow(BuildContext context) {
-    return widget.showDaysWeeks
-        ? TableRow(
-            children: [
-              for (var i = 0; i < DateTime.daysPerWeek; i++)
-                TableCell(
-                  child: Center(
-                    child: Text(
-                      _cleanCalendarController!
-                          .getDaysOfWeek(widget.locale)[i]
-                          .capitalize(),
-                      key: ValueKey("WeekLabel$i"),
-                      style: widget.dayWeekLabelStyle ??
-                          Theme.of(context).textTheme.bodyText1!.copyWith(
-                                color: Colors.grey[300],
-                                fontWeight: FontWeight.bold,
-                              ),
-                    ),
-                  ),
-                ),
-            ],
-          )
-        : TableRow(children: [
-            for (var i = 0; i < DateTime.daysPerWeek; i++)
-              TableCell(child: SizedBox.shrink())
-          ]);
-  }
-
-  Widget _buildMonthLabelRow(Month month, BuildContext context) {
-    return Row(
-      mainAxisAlignment: widget.monthLabelAlign,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: Text(
-            "${DateFormat('MMMM', widget.locale).format(
-                  DateTime(
-                    month.year,
-                    month.month,
-                  ),
-                ).capitalize()} ${DateFormat('yyyy', widget.locale).format(
-              DateTime(
-                month.year,
-                month.month,
-              ),
-            )}",
-            style: widget.monthLabelStyle ??
-                Theme.of(context).textTheme.bodyText1!.copyWith(
-                      color: Colors.grey[800],
-                    ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _onDayClick(DateTime date) {
-    if (widget.isRangeMode) {
-      if (rangeMinDate == null || rangeMaxDate != null) {
-        rangeMinDate = date;
-        rangeMaxDate = null;
-      } else if (date.isBefore(rangeMinDate!)) {
-        rangeMaxDate = rangeMinDate;
-        rangeMinDate = date;
-      } else if (date.isAfter(rangeMinDate!) || date.isSameDay(rangeMinDate!)) {
-        rangeMaxDate = date;
-      }
-    } else {
-      rangeMinDate = date;
-      rangeMaxDate = date;
-    }
-    setState(() {});
-
-    if (widget.onTapDate != null) {
-      widget.onTapDate!(date);
-    }
-
-    if (widget.onRangeSelected != null) {
-      widget.onRangeSelected!(rangeMinDate!, rangeMaxDate);
-    }
   }
 }
