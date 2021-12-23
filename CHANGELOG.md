@@ -2,7 +2,7 @@
 
 - Now the method onDayTapped and onRangeSelected will just be activate when the user tapped the date
 
-## [1.0.0] - 2021-11-18 (**Breakchanges**)
+## [1.0.0] - 2021-11-19 (**Breakchanges**)
 
 - Now we are in the version 1.0.0. We have a lot of different things:
   - Differents layout
