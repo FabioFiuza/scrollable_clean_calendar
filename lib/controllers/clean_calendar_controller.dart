@@ -115,14 +115,14 @@ class CleanCalendarController extends ChangeNotifier {
 
     if (update) {
       notifyListeners();
-    }
 
-    if (onDayTapped != null) {
-      onDayTapped!(date);
-    }
+      if (onDayTapped != null) {
+        onDayTapped!(date);
+      }
 
-    if (onRangeSelected != null) {
-      onRangeSelected!(rangeMinDate!, rangeMaxDate);
+      if (onRangeSelected != null) {
+        onRangeSelected!(rangeMinDate!, rangeMaxDate);
+      }
     }
   }
 

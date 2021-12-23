@@ -1,6 +1,6 @@
 name: scrollable_clean_calendar
 description: A clean calendar widget with vertical scroll, locale, and range selection date
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/FabioFiuza/scrollable_clean_calendar
 
 environment:
