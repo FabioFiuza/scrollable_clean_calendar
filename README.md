@@ -35,7 +35,7 @@ A clean calendar widget with vertical scroll, locale and range selection date.
 Add
 
 ```bash
-scrollable_clean_calendar: 1.0.0
+scrollable_clean_calendar: 1.1.0
 ```
 
 to your `pubspec.yaml` and run
@@ -89,6 +89,7 @@ in the project's main folder.
 | onPreviousMinDateTapped | Function(DateTime date)                       | null            | When a date before the min date is tapped               |
 | onAfterMaxDateTapped    | Function(DateTime date)                       | null            | When a date after max date is tapped                    |
 | rangeMode               | bool                                          | true            | If the range is enabled                                 |
+| readOnly                | bool                                          | false           | If the Calendar Widget is on read-only mode             |
 
 ## Layout.DEFAULT
 

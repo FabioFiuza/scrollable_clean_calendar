@@ -13,11 +13,12 @@ class MyApp extends StatelessWidget {
     maxDate: DateTime.now().add(const Duration(days: 365)),
     onRangeSelected: (firstDate, secondDate) {},
     onDayTapped: (date) {},
+    // readOnly: true,
     onPreviousMinDateTapped: (date) {},
     onAfterMaxDateTapped: (date) {},
     weekdayStart: DateTime.monday,
-    // initialDateSelected: DateTime(2022, 2, 3),
-    // endDateSelected: DateTime(2022, 2, 3),
+    // initialDateSelected: DateTime(2022, 3, 15),
+    // endDateSelected: DateTime(2022, 3, 20),
   );
 
   @override

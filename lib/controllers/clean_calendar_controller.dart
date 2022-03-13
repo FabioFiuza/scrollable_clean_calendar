@@ -12,6 +12,9 @@ class CleanCalendarController extends ChangeNotifier {
   /// If the range is enabled
   final bool rangeMode;
 
+  /// If the calendar is readOnly
+  final bool readOnly;
+
   /// In what weekday position the calendar is going to start
   final int weekdayStart;
 
@@ -40,6 +43,7 @@ class CleanCalendarController extends ChangeNotifier {
     required this.minDate,
     required this.maxDate,
     this.rangeMode = true,
+    this.readOnly = false,
     this.endDateSelected,
     this.initialDateSelected,
     this.onDayTapped,
