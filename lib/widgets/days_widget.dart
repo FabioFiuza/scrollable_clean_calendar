@@ -121,7 +121,9 @@ class DaysWidget extends StatelessWidget {
                 cleanCalendarController.onAfterMaxDateTapped!(day);
               }
             } else {
-              cleanCalendarController.onDayClick(day);
+              if (!cleanCalendarController.readOnly) {
+                cleanCalendarController.onDayClick(day);
+              }
             }
           },
           child: widget,

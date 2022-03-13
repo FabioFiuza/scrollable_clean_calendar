@@ -1,3 +1,7 @@
+## [1.1.0] - 2022-03-13
+
+- Create `readOnly` property inside `CleanCalendarController`, so the CalendarWidget can have the means to become a Read Only Widget
+
 ## [1.0.1] - 2021-12-23
 
 - Now the method onDayTapped and onRangeSelected will just be activate when the user tapped the date
