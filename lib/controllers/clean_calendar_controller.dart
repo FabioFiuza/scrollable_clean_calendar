@@ -57,23 +57,19 @@ class CleanCalendarController extends ChangeNotifier {
     weekdayEnd = x == 0 ? 7 : x;
 
     DateTime currentDate = DateTime(minDate.year, minDate.month);
-    months.add(currentDate);
+    months.insert(0, currentDate);
 
-    while (!(currentDate.year == maxDate.year &&
-        currentDate.month == maxDate.month)) {
+    while (!(currentDate.year == maxDate.year && currentDate.month == maxDate.month)) {
       currentDate = DateTime(currentDate.year, currentDate.month + 1);
-      months.add(currentDate);
+      months.insert(0, currentDate);
     }
 
     if (initialDateSelected != null &&
-        (initialDateSelected!.isAfter(minDate) ||
-            initialDateSelected!.isSameDay(minDate))) {
+        (initialDateSelected!.isAfter(minDate) || initialDateSelected!.isSameDay(minDate))) {
       onDayClick(initialDateSelected!, update: false);
     }
 
-    if (endDateSelected != null &&
-        (endDateSelected!.isBefore(maxDate) ||
-            endDateSelected!.isSameDay(maxDate))) {
+    if (endDateSelected != null && (endDateSelected!.isBefore(maxDate) || endDateSelected!.isSameDay(maxDate))) {
       onDayClick(endDateSelected!, update: false);
     }
   }

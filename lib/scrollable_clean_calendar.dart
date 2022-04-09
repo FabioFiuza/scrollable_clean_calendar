@@ -99,14 +99,10 @@ class ScrollableCleanCalendar extends StatefulWidget {
     this.dayTextStyle,
     this.dayRadius = 6,
     required this.calendarController,
-  }) : assert(layout != null ||
-            (monthBuilder != null &&
-                weekdayBuilder != null &&
-                dayBuilder != null));
+  }) : assert(layout != null || (monthBuilder != null && weekdayBuilder != null && dayBuilder != null));
 
   @override
-  _ScrollableCleanCalendarState createState() =>
-      _ScrollableCleanCalendarState();
+  _ScrollableCleanCalendarState createState() => _ScrollableCleanCalendarState();
 }
 
 class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
@@ -121,13 +117,13 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
   Widget build(BuildContext context) {
     return ListView.separated(
       controller: widget.scrollController,
-      padding: widget.padding ??
-          const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+      padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
       // cacheExtent:
       //     (MediaQuery.of(context).size.width / DateTime.daysPerWeek) * 6,
-      separatorBuilder: (_, __) =>
-          SizedBox(height: widget.spaceBetweenCalendars),
+      separatorBuilder: (_, __) => SizedBox(height: widget.spaceBetweenCalendars),
       itemCount: widget.calendarController.months.length,
+      reverse: true,
+      physics: const ClampingScrollPhysics(),
       itemBuilder: (context, index) {
         final month = widget.calendarController.months[index];
 
@@ -167,10 +163,8 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
                       layout: widget.layout,
                       dayBuilder: widget.dayBuilder,
                       backgroundColor: widget.dayBackgroundColor,
-                      selectedBackgroundColor:
-                          widget.daySelectedBackgroundColor,
-                      selectedBackgroundColorBetween:
-                          widget.daySelectedBackgroundColorBetween,
+                      selectedBackgroundColor: widget.daySelectedBackgroundColor,
+                      selectedBackgroundColorBetween: widget.daySelectedBackgroundColorBetween,
                       disableBackgroundColor: widget.dayDisableBackgroundColor,
                       radius: widget.dayRadius,
                       textStyle: widget.dayTextStyle,
