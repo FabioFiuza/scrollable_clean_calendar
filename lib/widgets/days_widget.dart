@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:scrollable_clean_calendar/models/day_values_model.dart';
 import 'package:scrollable_clean_calendar/controllers/clean_calendar_controller.dart';
+import 'package:scrollable_clean_calendar/models/day_values_model.dart';
 import 'package:scrollable_clean_calendar/utils/enums.dart';
 import 'package:scrollable_clean_calendar/utils/extensions.dart';
 
@@ -18,6 +18,7 @@ class DaysWidget extends StatelessWidget {
   final Color? backgroundColor;
   final Color? selectedBackgroundColorBetween;
   final Color? disableBackgroundColor;
+  final Color? dayDisableColor;
   final double radius;
   final TextStyle? textStyle;
 
@@ -33,6 +34,7 @@ class DaysWidget extends StatelessWidget {
     required this.backgroundColor,
     required this.selectedBackgroundColorBetween,
     required this.disableBackgroundColor,
+    required this.dayDisableColor,
     required this.radius,
     required this.textStyle,
   }) : super(key: key);
@@ -253,9 +255,7 @@ class DaysWidget extends StatelessWidget {
                   ? Colors.black
                   : Colors.white
               : Theme.of(context).colorScheme.onPrimary,
-          fontWeight: values.isFirstDayOfWeek || values.isLastDayOfWeek
-              ? FontWeight.bold
-              : null,
+          fontWeight: FontWeight.bold,
         );
 
         if (values.selectedMinDate == values.selectedMaxDate) {
@@ -289,11 +289,8 @@ class DaysWidget extends StatelessWidget {
     } else if (values.day.isBefore(values.minDate) ||
         values.day.isAfter(values.maxDate)) {
       txtStyle = (textStyle ?? Theme.of(context).textTheme.bodyText1)!.copyWith(
-        color: disableBackgroundColor != null
-            ? disableBackgroundColor!.computeLuminance() > .5
-                ? Colors.black.withOpacity(.5)
-                : Colors.white.withOpacity(.5)
-            : Theme.of(context).colorScheme.onSurface.withOpacity(.5),
+        color: dayDisableColor ??
+            Theme.of(context).colorScheme.onSurface.withOpacity(.5),
         decoration: TextDecoration.lineThrough,
         fontWeight: values.isFirstDayOfWeek || values.isLastDayOfWeek
             ? FontWeight.bold
