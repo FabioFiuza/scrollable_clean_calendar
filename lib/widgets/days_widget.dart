@@ -184,11 +184,8 @@ class DaysWidget extends StatelessWidget {
       bgColor = disableBackgroundColor ??
           Theme.of(context).colorScheme.surface.withOpacity(.4);
       txtStyle = (textStyle ?? Theme.of(context).textTheme.bodyText1)!.copyWith(
-        color: disableBackgroundColor != null
-            ? disableBackgroundColor!.computeLuminance() > .5
-                ? Colors.black.withOpacity(.5)
-                : Colors.white.withOpacity(.5)
-            : Theme.of(context).colorScheme.onSurface.withOpacity(.5),
+        color: dayDisableColor ??
+            Theme.of(context).colorScheme.onSurface.withOpacity(.5),
         decoration: TextDecoration.lineThrough,
       );
     }
