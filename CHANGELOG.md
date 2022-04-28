@@ -1,3 +1,7 @@
+## [1.2.0] - 2022-04-28
+
+- Create property `dayDisableColor`, so the color of the day when it is disabled could be customized
+
 ## [1.1.0] - 2022-03-13
 
 - Create `readOnly` property inside `CleanCalendarController`, so the CalendarWidget can have the means to become a Read Only Widget
