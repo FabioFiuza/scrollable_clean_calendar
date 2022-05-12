@@ -36,6 +36,12 @@ class CleanCalendarController extends ChangeNotifier {
   /// The end of selected range
   final DateTime? endDateSelected;
 
+  /// The physics of ListView
+  final ScrollPhysics? physics;
+
+  /// The reverse of ListView
+  final bool reverse;
+
   late int weekdayEnd;
   List<DateTime> months = [];
 
@@ -51,29 +57,34 @@ class CleanCalendarController extends ChangeNotifier {
     this.onAfterMaxDateTapped,
     this.onPreviousMinDateTapped,
     this.weekdayStart = DateTime.monday,
+    this.reverse = false,
+    this.physics,
   })  : assert(weekdayStart <= DateTime.sunday),
         assert(weekdayStart >= DateTime.monday) {
     final x = weekdayStart - 1;
     weekdayEnd = x == 0 ? 7 : x;
 
     DateTime currentDate = DateTime(minDate.year, minDate.month);
-    months.add(currentDate);
-
-    while (!(currentDate.year == maxDate.year &&
-        currentDate.month == maxDate.month)) {
-      currentDate = DateTime(currentDate.year, currentDate.month + 1);
+    if (reverse) {
+      months.insert(0, currentDate);
+    } else {
       months.add(currentDate);
     }
 
-    if (initialDateSelected != null &&
-        (initialDateSelected!.isAfter(minDate) ||
-            initialDateSelected!.isSameDay(minDate))) {
+    while (!(currentDate.year == maxDate.year && currentDate.month == maxDate.month)) {
+      currentDate = DateTime(currentDate.year, currentDate.month + 1);
+      if (reverse) {
+        months.insert(0, currentDate);
+      } else {
+        months.add(currentDate);
+      }
+    }
+
+    if (initialDateSelected != null && (initialDateSelected!.isAfter(minDate) || initialDateSelected!.isSameDay(minDate))) {
       onDayClick(initialDateSelected!, update: false);
     }
 
-    if (endDateSelected != null &&
-        (endDateSelected!.isBefore(maxDate) ||
-            endDateSelected!.isSameDay(maxDate))) {
+    if (endDateSelected != null && (endDateSelected!.isBefore(maxDate) || endDateSelected!.isSameDay(maxDate))) {
       onDayClick(endDateSelected!, update: false);
     }
   }
