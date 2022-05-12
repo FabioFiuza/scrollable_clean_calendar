@@ -122,8 +122,8 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
       //     (MediaQuery.of(context).size.width / DateTime.daysPerWeek) * 6,
       separatorBuilder: (_, __) => SizedBox(height: widget.spaceBetweenCalendars),
       itemCount: widget.calendarController.months.length,
-      reverse: true,
-      physics: const ClampingScrollPhysics(),
+      reverse: widget.calendarController.reverse,
+      physics: widget.calendarController.physics,
       itemBuilder: (context, index) {
         final month = widget.calendarController.months[index];
 
