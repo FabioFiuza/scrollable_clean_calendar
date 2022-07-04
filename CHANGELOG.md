@@ -1,4 +1,4 @@
-## [1.3.0] - 2022-07-04
+## [1.3.0] - 2022-07-04 (**Breakchanges**)
 
 - Remove property `scrollController`.
 - Add property `initialFocusDate` inside `CleanCalendarController`.
