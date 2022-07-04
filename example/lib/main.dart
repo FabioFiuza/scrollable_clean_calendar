@@ -54,6 +54,12 @@ class MyApp extends StatelessWidget {
             )
           ],
         ),
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.arrow_downward),
+          onPressed: () {
+            calendarController.jumpToMonth(date: DateTime(2022, 8));
+          },
+        ),
         body: ScrollableCleanCalendar(
           calendarController: calendarController,
           layout: Layout.BEAUTY,

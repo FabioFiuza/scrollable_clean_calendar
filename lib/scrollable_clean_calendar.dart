@@ -8,13 +8,11 @@ import 'package:scrollable_clean_calendar/utils/enums.dart';
 import 'package:scrollable_clean_calendar/widgets/days_widget.dart';
 import 'package:scrollable_clean_calendar/widgets/month_widget.dart';
 import 'package:scrollable_clean_calendar/widgets/weekdays_widget.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class ScrollableCleanCalendar extends StatefulWidget {
   /// The language locale
   final String locale;
-
-  /// Scroll controller
-  final ScrollController? scrollController;
 
   /// If is to show or not the weekdays in calendar
   final bool showWeekdays;
@@ -35,7 +33,7 @@ class ScrollableCleanCalendar extends StatefulWidget {
   final double calendarMainAxisSpacing;
 
   /// The parent padding
-  final EdgeInsetsGeometry? padding;
+  final EdgeInsets? padding;
 
   /// The label text style of month
   final TextStyle? monthTextStyle;
@@ -81,7 +79,6 @@ class ScrollableCleanCalendar extends StatefulWidget {
 
   const ScrollableCleanCalendar({
     this.locale = 'en',
-    this.scrollController,
     this.showWeekdays = true,
     this.layout,
     this.calendarCrossAxisSpacing = 4,
@@ -123,8 +120,8 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      controller: widget.scrollController,
+    return ScrollablePositionedList.separated(
+      itemScrollController: widget.calendarController.itemScrollController,
       padding: widget.padding ??
           const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
       // cacheExtent:
