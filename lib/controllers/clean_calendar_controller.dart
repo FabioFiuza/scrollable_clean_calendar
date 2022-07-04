@@ -37,6 +37,9 @@ class CleanCalendarController extends ChangeNotifier {
   /// The end of selected range
   final DateTime? endDateSelected;
 
+  /// An initial fucus date
+  final DateTime? initialFocusDate;
+
   late int weekdayEnd;
   List<DateTime> months = [];
 
@@ -55,6 +58,7 @@ class CleanCalendarController extends ChangeNotifier {
     this.onAfterMaxDateTapped,
     this.onPreviousMinDateTapped,
     this.weekdayStart = DateTime.monday,
+    this.initialFocusDate,
   })  : assert(weekdayStart <= DateTime.sunday),
         assert(weekdayStart >= DateTime.monday) {
     final x = weekdayStart - 1;
@@ -186,7 +190,7 @@ class CleanCalendarController extends ChangeNotifier {
   }
 
   /// Jump to [date.month].
-  /// 
+  ///
   /// Immediately, without animation, reconfigure the list so that the item at
   /// [index]'s leading edge is at the given [alignment].
   ///

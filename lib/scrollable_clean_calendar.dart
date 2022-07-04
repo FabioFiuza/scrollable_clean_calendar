@@ -114,7 +114,12 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
   @override
   void initState() {
     initializeDateFormatting();
-
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final focusDate = widget.calendarController.initialFocusDate;
+      if (focusDate != null) {
+        widget.calendarController.jumpToMonth(date: focusDate);
+      }
+    });
     super.initState();
   }
 

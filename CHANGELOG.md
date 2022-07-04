@@ -1,7 +1,8 @@
 ## [1.3.0] - 2022-07-04
 
 - Remove property `scrollController`.
-- Add `scrollToMonth` and `jumpToMonth` inside `CleanCalendarController`, now can scroll to specific month.
+- Add property `initialFocusDate` inside `CleanCalendarController`.
+- Add function `scrollToMonth` and `jumpToMonth` inside `CleanCalendarController`, now can scroll to specific month.
 
 ## [1.2.0] - 2022-04-28
 
