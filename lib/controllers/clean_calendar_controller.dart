@@ -185,6 +185,24 @@ class CleanCalendarController extends ChangeNotifier {
         opacityAnimationWeights: opacityAnimationWeights);
   }
 
+  /// Jump to [date.month].
+  /// 
+  /// Immediately, without animation, reconfigure the list so that the item at
+  /// [index]'s leading edge is at the given [alignment].
+  ///
+  /// The [alignment] specifies the desired position for the leading edge of the
+  /// item.  The [alignment] is expected to be a value in the range \[0.0, 1.0\]
+  /// and represents a proportion along the main axis of the viewport.
+  ///
+  /// For a vertically scrolling view that is not reversed:
+  /// * 0 aligns the top edge of the item with the top edge of the view.
+  /// * 1 aligns the top edge of the item with the bottom of the view.
+  /// * 0.5 aligns the top edge of the item with the center of the view.
+  ///
+  /// For a horizontally scrolling view that is not reversed:
+  /// * 0 aligns the left edge of the item with the left edge of the view
+  /// * 1 aligns the left edge of the item with the right edge of the view.
+  /// * 0.5 aligns the left edge of the item with the center of the view.
   void jumpToMonth({required DateTime date, double alignment = 0}) {
     if (!(date.year >= minDate.year &&
         (date.year > minDate.year || date.month >= minDate.month) &&
