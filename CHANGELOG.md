@@ -1,3 +1,9 @@
+## [1.3.0] - 2022-07-04 (**Breakchanges**)
+
+- Remove property `scrollController`.
+- Add property `initialFocusDate` inside `CleanCalendarController`.
+- Add function `scrollToMonth` and `jumpToMonth` inside `CleanCalendarController`, now can scroll to specific month.
+
 ## [1.2.0] - 2022-04-28
 
 - Create property `dayDisableColor`, so the color of the day when it is disabled could be customized

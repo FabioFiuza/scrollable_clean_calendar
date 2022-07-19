@@ -1,6 +1,6 @@
 name: scrollable_clean_calendar
 description: A clean calendar widget with vertical scroll, locale, and range selection date
-version: 1.2.0
+version: 1.3.0
 homepage: https://github.com/FabioFiuza/scrollable_clean_calendar
 
 environment:
@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
   intl: ^0.17.0
   flutter_lints: ^1.0.4
+  scrollable_positioned_list: ^0.3.2
 
 dev_dependencies:
   flutter_test:
