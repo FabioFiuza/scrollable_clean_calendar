@@ -1,3 +1,7 @@
+## [1.4.0] - 2022-07-20
+
+- Add again the scrollController parameter as Optional (But remember, if you use this controller the Parameter `initialFocusDate` and the Functions `scrollToMonth` and `jumpToMonth` won't work since this override the scrollable list controller. Do not use them together or you will receive a nullPointer Exception)
+
 ## [1.3.1] - 2022-07-20
 
 - Updated flutter_lints and moved it from direct dependency to dev dependency which fix incompatibility with updated Flutter 3 projects
