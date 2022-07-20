@@ -14,6 +14,9 @@ class ScrollableCleanCalendar extends StatefulWidget {
   /// The language locale
   final String locale;
 
+  /// Scroll controller
+  final ScrollController? scrollController;
+
   /// If is to show or not the weekdays in calendar
   final bool showWeekdays;
 
@@ -79,6 +82,7 @@ class ScrollableCleanCalendar extends StatefulWidget {
 
   const ScrollableCleanCalendar({
     this.locale = 'en',
+    this.scrollController,
     this.showWeekdays = true,
     this.layout,
     this.calendarCrossAxisSpacing = 4,
@@ -125,70 +129,97 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    return ScrollablePositionedList.separated(
-      itemScrollController: widget.calendarController.itemScrollController,
+    if (widget.scrollController != null) {
+      print("TEM");
+      return listViewCalendar();
+    } else {
+      print("NAO");
+      return scrollablePositionedListCalendar();
+    }
+  }
+
+  Widget listViewCalendar() {
+    return ListView.separated(
+      controller: widget.scrollController,
       padding: widget.padding ??
           const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
-      // cacheExtent:
-      //     (MediaQuery.of(context).size.width / DateTime.daysPerWeek) * 6,
       separatorBuilder: (_, __) =>
           SizedBox(height: widget.spaceBetweenCalendars),
       itemCount: widget.calendarController.months.length,
       itemBuilder: (context, index) {
         final month = widget.calendarController.months[index];
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        return childCollumn(month);
+      },
+    );
+  }
+
+  Widget scrollablePositionedListCalendar() {
+    return ScrollablePositionedList.separated(
+      itemScrollController: widget.calendarController.itemScrollController,
+      padding: widget.padding ??
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+      separatorBuilder: (_, __) =>
+          SizedBox(height: widget.spaceBetweenCalendars),
+      itemCount: widget.calendarController.months.length,
+      itemBuilder: (context, index) {
+        final month = widget.calendarController.months[index];
+
+        return childCollumn(month);
+      },
+    );
+  }
+
+  Widget childCollumn(DateTime month) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: double.maxFinite,
+          child: MonthWidget(
+            month: month,
+            locale: widget.locale,
+            layout: widget.layout,
+            monthBuilder: widget.monthBuilder,
+            textAlign: widget.monthTextAlign,
+            textStyle: widget.monthTextStyle,
+          ),
+        ),
+        SizedBox(height: widget.spaceBetweenMonthAndCalendar),
+        Column(
           children: [
-            SizedBox(
-              width: double.maxFinite,
-              child: MonthWidget(
-                month: month,
-                locale: widget.locale,
-                layout: widget.layout,
-                monthBuilder: widget.monthBuilder,
-                textAlign: widget.monthTextAlign,
-                textStyle: widget.monthTextStyle,
-              ),
+            WeekdaysWidget(
+              showWeekdays: widget.showWeekdays,
+              cleanCalendarController: widget.calendarController,
+              locale: widget.locale,
+              layout: widget.layout,
+              weekdayBuilder: widget.weekdayBuilder,
+              textStyle: widget.weekdayTextStyle,
             ),
-            SizedBox(height: widget.spaceBetweenMonthAndCalendar),
-            Column(
-              children: [
-                WeekdaysWidget(
-                  showWeekdays: widget.showWeekdays,
+            AnimatedBuilder(
+              animation: widget.calendarController,
+              builder: (_, __) {
+                return DaysWidget(
+                  month: month,
                   cleanCalendarController: widget.calendarController,
-                  locale: widget.locale,
+                  calendarCrossAxisSpacing: widget.calendarCrossAxisSpacing,
+                  calendarMainAxisSpacing: widget.calendarMainAxisSpacing,
                   layout: widget.layout,
-                  weekdayBuilder: widget.weekdayBuilder,
-                  textStyle: widget.weekdayTextStyle,
-                ),
-                AnimatedBuilder(
-                  animation: widget.calendarController,
-                  builder: (_, __) {
-                    return DaysWidget(
-                      month: month,
-                      cleanCalendarController: widget.calendarController,
-                      calendarCrossAxisSpacing: widget.calendarCrossAxisSpacing,
-                      calendarMainAxisSpacing: widget.calendarMainAxisSpacing,
-                      layout: widget.layout,
-                      dayBuilder: widget.dayBuilder,
-                      backgroundColor: widget.dayBackgroundColor,
-                      selectedBackgroundColor:
-                          widget.daySelectedBackgroundColor,
-                      selectedBackgroundColorBetween:
-                          widget.daySelectedBackgroundColorBetween,
-                      disableBackgroundColor: widget.dayDisableBackgroundColor,
-                      dayDisableColor: widget.dayDisableColor,
-                      radius: widget.dayRadius,
-                      textStyle: widget.dayTextStyle,
-                    );
-                  },
-                )
-              ],
+                  dayBuilder: widget.dayBuilder,
+                  backgroundColor: widget.dayBackgroundColor,
+                  selectedBackgroundColor: widget.daySelectedBackgroundColor,
+                  selectedBackgroundColorBetween:
+                      widget.daySelectedBackgroundColorBetween,
+                  disableBackgroundColor: widget.dayDisableBackgroundColor,
+                  dayDisableColor: widget.dayDisableColor,
+                  radius: widget.dayRadius,
+                  textStyle: widget.dayTextStyle,
+                );
+              },
             )
           ],
-        );
-      },
+        )
+      ],
     );
   }
 }

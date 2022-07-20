@@ -108,7 +108,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "1.3.1"
+    version: "1.4.0"
   scrollable_positioned_list:
     dependency: transitive
     description:
