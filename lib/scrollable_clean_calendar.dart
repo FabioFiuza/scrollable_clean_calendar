@@ -106,7 +106,7 @@ class ScrollableCleanCalendar extends StatefulWidget {
                 dayBuilder != null));
 
   @override
-  _ScrollableCleanCalendarState createState() =>
+  State<ScrollableCleanCalendar> createState() =>
       _ScrollableCleanCalendarState();
 }
 
