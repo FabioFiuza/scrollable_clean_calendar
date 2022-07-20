@@ -130,10 +130,8 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
   @override
   Widget build(BuildContext context) {
     if (widget.scrollController != null) {
-      print("TEM");
       return listViewCalendar();
     } else {
-      print("NAO");
       return scrollablePositionedListCalendar();
     }
   }
