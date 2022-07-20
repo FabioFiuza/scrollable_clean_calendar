@@ -1,4 +1,4 @@
-## [1.3.0] - 2022-07-20
+## [1.3.1] - 2022-07-20
 
 - Updated flutter_lints and moved it from direct dependency to dev dependency which fix incompatibility with updated Flutter 3 projects
 
