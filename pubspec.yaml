@@ -11,11 +11,11 @@ dependencies:
   flutter:
     sdk: flutter
   intl: ^0.17.0
-  flutter_lints: ^1.0.4
   scrollable_positioned_list: ^0.3.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: ^2.0.1
 
 flutter:
