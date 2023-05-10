@@ -1,3 +1,9 @@
+## [1.4.1] - 2023-05-10
+
+- Changed the intl dependency declaration to use the intl version locked by flutter_localizations from sdk which fix incompatibility with updated Flutter 3.10 projects
+- Fixed some deprecation warnings on more recent Flutter versions
+- Bumped min Flutter version to 3.3.0 due to the deprecation warnigs fix
+
 ## [1.4.0] - 2022-07-20
 
 - Add again the scrollController parameter as Optional (But remember, if you use this controller the Parameter `initialFocusDate` and the Functions `scrollToMonth` and `jumpToMonth` won't work since this override the scrollable list controller. Do not use them together or you will receive a nullPointer Exception)
