@@ -137,7 +137,7 @@ class DaysWidget extends StatelessWidget {
   Widget _pattern(BuildContext context, DayValues values) {
     Color bgColor = backgroundColor ?? Theme.of(context).colorScheme.surface;
     TextStyle txtStyle =
-        (textStyle ?? Theme.of(context).textTheme.bodyText1)!.copyWith(
+        (textStyle ?? Theme.of(context).textTheme.bodyLarge)!.copyWith(
       color: backgroundColor != null
           ? backgroundColor!.computeLuminance() > .5
               ? Colors.black
@@ -153,7 +153,7 @@ class DaysWidget extends StatelessWidget {
         bgColor =
             selectedBackgroundColor ?? Theme.of(context).colorScheme.primary;
         txtStyle =
-            (textStyle ?? Theme.of(context).textTheme.bodyText1)!.copyWith(
+            (textStyle ?? Theme.of(context).textTheme.bodyLarge)!.copyWith(
           color: selectedBackgroundColor != null
               ? selectedBackgroundColor!.computeLuminance() > .5
                   ? Colors.black
@@ -164,7 +164,7 @@ class DaysWidget extends StatelessWidget {
         bgColor = selectedBackgroundColorBetween ??
             Theme.of(context).colorScheme.primary.withOpacity(.3);
         txtStyle =
-            (textStyle ?? Theme.of(context).textTheme.bodyText1)!.copyWith(
+            (textStyle ?? Theme.of(context).textTheme.bodyLarge)!.copyWith(
           color: selectedBackgroundColor != null &&
                   selectedBackgroundColor == selectedBackgroundColorBetween
               ? selectedBackgroundColor!.computeLuminance() > .5
@@ -176,14 +176,14 @@ class DaysWidget extends StatelessWidget {
       }
     } else if (values.day.isSameDay(values.minDate)) {
       bgColor = Colors.transparent;
-      txtStyle = (textStyle ?? Theme.of(context).textTheme.bodyText1)!.copyWith(
+      txtStyle = (textStyle ?? Theme.of(context).textTheme.bodyLarge)!.copyWith(
         color: selectedBackgroundColor ?? Theme.of(context).colorScheme.primary,
       );
     } else if (values.day.isBefore(values.minDate) ||
         values.day.isAfter(values.maxDate)) {
       bgColor = disableBackgroundColor ??
           Theme.of(context).colorScheme.surface.withOpacity(.4);
-      txtStyle = (textStyle ?? Theme.of(context).textTheme.bodyText1)!.copyWith(
+      txtStyle = (textStyle ?? Theme.of(context).textTheme.bodyLarge)!.copyWith(
         color: dayDisableColor ??
             Theme.of(context).colorScheme.onSurface.withOpacity(.5),
         decoration: TextDecoration.lineThrough,
@@ -215,7 +215,7 @@ class DaysWidget extends StatelessWidget {
     BorderRadiusGeometry? borderRadius;
     Color bgColor = Colors.transparent;
     TextStyle txtStyle =
-        (textStyle ?? Theme.of(context).textTheme.bodyText1)!.copyWith(
+        (textStyle ?? Theme.of(context).textTheme.bodyLarge)!.copyWith(
       color: backgroundColor != null
           ? backgroundColor!.computeLuminance() > .5
               ? Colors.black
@@ -246,7 +246,7 @@ class DaysWidget extends StatelessWidget {
         bgColor =
             selectedBackgroundColor ?? Theme.of(context).colorScheme.primary;
         txtStyle =
-            (textStyle ?? Theme.of(context).textTheme.bodyText1)!.copyWith(
+            (textStyle ?? Theme.of(context).textTheme.bodyLarge)!.copyWith(
           color: selectedBackgroundColor != null
               ? selectedBackgroundColor!.computeLuminance() > .5
                   ? Colors.black
@@ -274,7 +274,7 @@ class DaysWidget extends StatelessWidget {
         bgColor = selectedBackgroundColorBetween ??
             Theme.of(context).colorScheme.primary.withOpacity(.3);
         txtStyle =
-            (textStyle ?? Theme.of(context).textTheme.bodyText1)!.copyWith(
+            (textStyle ?? Theme.of(context).textTheme.bodyLarge)!.copyWith(
           color:
               selectedBackgroundColor ?? Theme.of(context).colorScheme.primary,
           fontWeight: values.isFirstDayOfWeek || values.isLastDayOfWeek
@@ -285,7 +285,7 @@ class DaysWidget extends StatelessWidget {
     } else if (values.day.isSameDay(values.minDate)) {
     } else if (values.day.isBefore(values.minDate) ||
         values.day.isAfter(values.maxDate)) {
-      txtStyle = (textStyle ?? Theme.of(context).textTheme.bodyText1)!.copyWith(
+      txtStyle = (textStyle ?? Theme.of(context).textTheme.bodyLarge)!.copyWith(
         color: dayDisableColor ??
             Theme.of(context).colorScheme.onSurface.withOpacity(.5),
         decoration: TextDecoration.lineThrough,
