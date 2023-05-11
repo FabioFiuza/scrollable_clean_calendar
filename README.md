@@ -35,7 +35,7 @@ A clean calendar widget with vertical scroll, locale and range selection date.
 Add
 
 ```bash
-scrollable_clean_calendar: 1.4.0
+scrollable_clean_calendar: 1.4.1
 ```
 
 to your `pubspec.yaml` and run
