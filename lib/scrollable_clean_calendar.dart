@@ -147,6 +147,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
   Widget listViewCalendar() {
     return ListView.separated(
       shrinkWrap: widget.shrinkWrap ?? false,
+      physics: widget.physics,
       controller: widget.scrollController,
       padding: widget.padding ??
           const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
