@@ -11,6 +11,12 @@ import 'package:scrollable_clean_calendar/widgets/weekdays_widget.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class ScrollableCleanCalendar extends StatefulWidget {
+  /// List scroll physics
+  final ScrollPhysics? physics;
+
+  /// List shrink wrap
+  final bool? shrinkWrap;
+
   /// The language locale
   final String locale;
 
@@ -103,6 +109,8 @@ class ScrollableCleanCalendar extends StatefulWidget {
     this.dayDisableColor,
     this.dayTextStyle,
     this.dayRadius = 6,
+    this.physics,
+    this.shrinkWrap,
     required this.calendarController,
   }) : assert(layout != null ||
             (monthBuilder != null &&
@@ -138,6 +146,8 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
 
   Widget listViewCalendar() {
     return ListView.separated(
+      shrinkWrap: widget.shrinkWrap ?? false,
+      physics: widget.physics,
       controller: widget.scrollController,
       padding: widget.padding ??
           const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
@@ -154,6 +164,8 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
 
   Widget scrollablePositionedListCalendar() {
     return ScrollablePositionedList.separated(
+      physics: widget.physics,
+      shrinkWrap: widget.shrinkWrap ?? false,
       itemScrollController: widget.calendarController.itemScrollController,
       padding: widget.padding ??
           const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
