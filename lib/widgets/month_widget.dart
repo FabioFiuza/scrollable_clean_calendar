@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
+import 'package:scrollable_clean_calendar/controllers/clean_calendar_controller.dart';
+import 'package:scrollable_clean_calendar/models/month_values_model.dart';
 import 'package:scrollable_clean_calendar/utils/enums.dart';
 import 'package:scrollable_clean_calendar/utils/extensions.dart';
 
@@ -10,7 +11,8 @@ class MonthWidget extends StatelessWidget {
   final Layout? layout;
   final TextStyle? textStyle;
   final TextAlign? textAlign;
-  final Widget Function(BuildContext context, String month)? monthBuilder;
+  final MonthBuilder monthBuilder;
+  final CleanCalendarController cleanCalendarController;
 
   const MonthWidget({
     Key? key,
@@ -20,6 +22,7 @@ class MonthWidget extends StatelessWidget {
     required this.monthBuilder,
     required this.textStyle,
     required this.textAlign,
+    required this.cleanCalendarController,
   }) : super(key: key);
 
   @override
@@ -27,8 +30,16 @@ class MonthWidget extends StatelessWidget {
     final text =
         '${DateFormat('MMMM', locale).format(DateTime(month.year, month.month)).capitalize()} ${DateFormat('yyyy', locale).format(DateTime(month.year, month.month))}';
 
+    bool isSelected =
+        cleanCalendarController.selectedMonth.month == month.month;
+    final monthValues = MonthValues(
+      month: month,
+      text: text,
+      isSelected: isSelected,
+    );
+
     if (monthBuilder != null) {
-      return monthBuilder!(context, text);
+      return monthBuilder!(context, monthValues);
     }
 
     return <Layout, Widget Function()>{

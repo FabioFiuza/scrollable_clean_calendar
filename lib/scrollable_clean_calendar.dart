@@ -2,10 +2,14 @@ library scrollable_clean_calendar;
 
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:scrollable_clean_calendar/controllers/clean_calendar_controller.dart';
 import 'package:scrollable_clean_calendar/models/day_values_model.dart';
+import 'package:scrollable_clean_calendar/models/month_values_model.dart';
 import 'package:scrollable_clean_calendar/utils/enums.dart';
+import 'package:scrollable_clean_calendar/utils/extensions.dart';
 import 'package:scrollable_clean_calendar/widgets/days_widget.dart';
+import 'package:scrollable_clean_calendar/widgets/month_compact_view.dart';
 import 'package:scrollable_clean_calendar/widgets/month_widget.dart';
 import 'package:scrollable_clean_calendar/widgets/weekdays_widget.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -69,7 +73,7 @@ class ScrollableCleanCalendar extends StatefulWidget {
   final double dayRadius;
 
   /// A builder to make a customized month
-  final Widget Function(BuildContext context, String month)? monthBuilder;
+  final Widget Function(BuildContext context, MonthValues month)? monthBuilder;
 
   /// A builder to make a customized weekday
   final Widget Function(BuildContext context, String weekday)? weekdayBuilder;
@@ -129,12 +133,167 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.scrollController != null) {
-      return listViewCalendar();
-    } else {
-      return scrollablePositionedListCalendar();
+    if (widget.calendarController.currentViewMode == ViewMode.scrollableMonth) {
+      if (widget.scrollController != null) {
+        return listViewCalendar();
+      } else {
+        return scrollablePositionedListCalendar();
+      }
     }
+    return Padding(
+      padding: widget.padding ??
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+      child: Column(
+        children: [
+          ListenableBuilder(
+            listenable: widget.calendarController,
+            builder: (context, __) => Row(
+              children: [
+                if (widget.calendarController.currentViewMode ==
+                    ViewMode.compactMonth)
+                  monthSelection(widget.calendarController.months),
+                if (widget.calendarController.currentViewMode ==
+                    ViewMode.compactYear)
+                  yearSelection(widget.calendarController.years),
+                viewMode(),
+              ],
+            ),
+          ),
+          AnimatedBuilder(
+            animation: widget.calendarController,
+            builder: (_, __) {
+              return Column(
+                children: [
+                  if (widget.calendarController.currentViewMode ==
+                      ViewMode.compactYear)
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: Colors.grey.shade200,
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: MonthCompactView(
+                        month: widget.calendarController.selectedMonth,
+                        cleanCalendarController: widget.calendarController,
+                        locale: 'id',
+                        monthBuilder: widget.monthBuilder,
+                        calendarCrossAxisSpacing:
+                            widget.calendarCrossAxisSpacing,
+                        calendarMainAxisSpacing: widget.calendarMainAxisSpacing,
+                      ),
+                    ),
+                  if (widget.calendarController.currentViewMode ==
+                      ViewMode.compactMonth) ...[
+                    WeekdaysWidget(
+                      showWeekdays: widget.showWeekdays,
+                      cleanCalendarController: widget.calendarController,
+                      locale: widget.locale,
+                      layout: widget.layout,
+                      weekdayBuilder: widget.weekdayBuilder,
+                      textStyle: widget.weekdayTextStyle,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: Colors.grey.shade200,
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: DaysWidget(
+                        month: widget.calendarController.selectedMonth,
+                        cleanCalendarController: widget.calendarController,
+                        calendarCrossAxisSpacing:
+                            widget.calendarCrossAxisSpacing,
+                        calendarMainAxisSpacing: widget.calendarMainAxisSpacing,
+                        layout: widget.layout,
+                        dayBuilder: widget.dayBuilder,
+                        backgroundColor: widget.dayBackgroundColor,
+                        selectedBackgroundColor:
+                            widget.daySelectedBackgroundColor,
+                        selectedBackgroundColorBetween:
+                            widget.daySelectedBackgroundColorBetween,
+                        disableBackgroundColor:
+                            widget.dayDisableBackgroundColor,
+                        dayDisableColor: widget.dayDisableColor,
+                        radius: widget.dayRadius,
+                        textStyle: widget.dayTextStyle,
+                      ),
+                    )
+                  ],
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
   }
+
+  Widget monthSelection(List<DateTime> month) => Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(32),
+          border: Border.all(color: const Color(0xff00B7BD)),
+        ),
+        child: DropdownButton<DateTime>(
+          value: widget.calendarController.selectedMonth,
+          items: month.map<DropdownMenuItem<DateTime>>(
+            (DateTime value) {
+              return DropdownMenuItem<DateTime>(
+                value: value,
+                child: Text(
+                  '${DateFormat('MMMM', 'en').format(DateTime(value.year, value.month)).capitalize()} ${DateFormat('yyyy', 'en').format(DateTime(value.year, value.month))}',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xff00B7BD),
+                  ),
+                ),
+              );
+            },
+          ).toList(),
+          onChanged: (DateTime? newValue) =>
+              widget.calendarController.selectMonth = newValue!,
+        ),
+      );
+
+  Widget yearSelection(List<DateTime> year) => Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(32),
+          border: Border.all(color: const Color(0xff00B7BD)),
+        ),
+        child: DropdownButton<DateTime>(
+          value: widget.calendarController.selectedYear,
+          items: year.map<DropdownMenuItem<DateTime>>(
+            (DateTime value) {
+              return DropdownMenuItem<DateTime>(
+                value: value,
+                child: Text(
+                  '${value.year}',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xff00B7BD),
+                  ),
+                ),
+              );
+            },
+          ).toList(),
+          onChanged: (DateTime? newValue) =>
+              widget.calendarController.selectYear = newValue!,
+        ),
+      );
+
+  Widget viewMode() => Switch(
+        value:
+            widget.calendarController.currentViewMode == ViewMode.compactMonth,
+        onChanged: (_) {
+          if (widget.calendarController.currentViewMode !=
+              ViewMode.compactYear) {
+            widget.calendarController.changeViewMode = ViewMode.compactYear;
+          } else {
+            widget.calendarController.changeViewMode = ViewMode.compactMonth;
+          }
+        },
+      );
 
   Widget listViewCalendar() {
     return ListView.separated(
@@ -175,6 +334,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
         SizedBox(
           width: double.maxFinite,
           child: MonthWidget(
+            cleanCalendarController: widget.calendarController,
             month: month,
             locale: widget.locale,
             layout: widget.layout,

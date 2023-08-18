@@ -1,7 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:scrollable_clean_calendar/models/month_values_model.dart';
 import 'package:scrollable_clean_calendar/utils/extensions.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+
+enum ViewMode {
+  compactMonth,
+  compactYear,
+  scrollableMonth,
+}
+
+typedef MonthBuilder = Widget Function(
+  BuildContext context,
+  MonthValues monthValues,
+)?;
 
 class CleanCalendarController extends ChangeNotifier {
   /// Obrigatory: The mininimum date to show
@@ -40,8 +52,19 @@ class CleanCalendarController extends ChangeNotifier {
   /// An initial fucus date
   final DateTime? initialFocusDate;
 
+  final ViewMode viewMode;
+
+  late ViewMode _viewMode;
+
   late int weekdayEnd;
+
+  late DateTime selectedMonth;
+
+  late DateTime selectedYear;
+
   List<DateTime> months = [];
+
+  List<DateTime> years = [];
 
   /// The item scroll controller
   final ItemScrollController itemScrollController = ItemScrollController();
@@ -49,6 +72,7 @@ class CleanCalendarController extends ChangeNotifier {
   CleanCalendarController({
     required this.minDate,
     required this.maxDate,
+    this.viewMode = ViewMode.compactMonth,
     this.rangeMode = true,
     this.readOnly = false,
     this.endDateSelected,
@@ -61,10 +85,19 @@ class CleanCalendarController extends ChangeNotifier {
     this.initialFocusDate,
   })  : assert(weekdayStart <= DateTime.sunday),
         assert(weekdayStart >= DateTime.monday) {
+    _viewMode = viewMode;
+
     final x = weekdayStart - 1;
     weekdayEnd = x == 0 ? 7 : x;
 
-    DateTime currentDate = DateTime(minDate.year, minDate.month);
+    late DateTime currentDate;
+    if (_viewMode == ViewMode.compactMonth) {
+      currentDate = DateTime(DateTime.now().year, 1);
+    }
+    if (_viewMode == ViewMode.scrollableMonth) {
+      currentDate = DateTime(minDate.year, minDate.month);
+    }
+
     months.add(currentDate);
 
     while (!(currentDate.year == maxDate.year &&
@@ -72,6 +105,23 @@ class CleanCalendarController extends ChangeNotifier {
       currentDate = DateTime(currentDate.year, currentDate.month + 1);
       months.add(currentDate);
     }
+
+    // while (currentDate.month < 12) {
+    //   currentDate = DateTime(currentDate.year, currentDate.month + 1);
+    //   months.add(currentDate);
+    // }
+
+    currentDate = DateTime(minDate.year);
+    years.add(currentDate);
+    while (currentDate.year < maxDate.year) {
+      currentDate = DateTime(currentDate.year + 1);
+      years.add(currentDate);
+    }
+
+    years.sort();
+
+    selectedMonth = months[DateTime.now().month - 1];
+    selectedYear = DateTime(selectedMonth.year);
 
     if (initialDateSelected != null &&
         (initialDateSelected!.isAfter(minDate) ||
@@ -88,6 +138,36 @@ class CleanCalendarController extends ChangeNotifier {
 
   DateTime? rangeMinDate;
   DateTime? rangeMaxDate;
+
+  set selectMonth(DateTime month) {
+    selectedMonth = month;
+    notifyListeners();
+  }
+
+  set selectYear(DateTime year) {
+    selectedYear = year;
+    selectedMonth = DateTime(selectedYear.year, selectedMonth.month);
+    updateMonthListByYear(selectedYear.year);
+    notifyListeners();
+  }
+
+  set changeViewMode(ViewMode viewMode) {
+    _viewMode = viewMode;
+    notifyListeners();
+  }
+
+  ViewMode get currentViewMode => _viewMode;
+
+  updateMonthListByYear(int year) {
+    DateTime currentDate = DateTime(year, 1);
+    months.clear();
+    months.add(currentDate);
+
+    while (currentDate.month < 12) {
+      currentDate = DateTime(currentDate.year, currentDate.month + 1);
+      months.add(currentDate);
+    }
+  }
 
   List<String> getDaysOfWeek([String locale = 'pt']) {
     var today = DateTime.now();
@@ -145,7 +225,7 @@ class CleanCalendarController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Scroll to [date.month].
+  /// Scroll to [date.compactMonth].
   ///
   /// Animate the list over [duration] using the given [curve] such that the
   /// item at [index] ends up with its leading edge at the given [alignment].
@@ -189,7 +269,7 @@ class CleanCalendarController extends ChangeNotifier {
         opacityAnimationWeights: opacityAnimationWeights);
   }
 
-  /// Jump to [date.month].
+  /// Jump to [date.compactMonth].
   ///
   /// Immediately, without animation, reconfigure the list so that the item at
   /// [index]'s leading edge is at the given [alignment].
