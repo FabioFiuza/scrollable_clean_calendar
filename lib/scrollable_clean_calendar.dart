@@ -69,8 +69,22 @@ class ScrollableCleanCalendar extends StatefulWidget {
   /// The day disable color
   final Color? dayDisableColor;
 
+  /// The dropdown background color
+  final Color? dropdownButtonColor;
+
+  /// The calendar view background color
+  final Color? monthViewCalendarBackground;
+
   /// The radius of day items
   final double dayRadius;
+
+  /// The dropdown icon widget
+  final Widget? dropdownIconWidget;
+
+  /// it used when use [yearSelection()] / [monthSelection()] default builder
+  final Function(DateTime)? onTimeChange;
+
+  final Widget Function(ViewMode viewMode)? switchViewWidget;
 
   /// A builder to make a customized month
   final Widget Function(BuildContext context, MonthValues month)? monthBuilder;
@@ -80,6 +94,10 @@ class ScrollableCleanCalendar extends StatefulWidget {
 
   /// A builder to make a customized day of calendar
   final Widget Function(BuildContext context, DayValues values)? dayBuilder;
+
+  /// Right now it's just passing on tap function to another build in [yearSelection()] / [monthSelection()]
+  /// Might be change if need to fully customized [yearSelection()] / [monthSelection()]
+  final Future<DateTime?> Function()? onTapSwitchDateTime;
 
   /// The controller of ScrollableCleanCalendar
   final CleanCalendarController calendarController;
@@ -105,8 +123,14 @@ class ScrollableCleanCalendar extends StatefulWidget {
     this.daySelectedBackgroundColorBetween,
     this.dayDisableBackgroundColor,
     this.dayDisableColor,
+    this.dropdownButtonColor,
+    this.dropdownIconWidget,
+    this.monthViewCalendarBackground,
+    this.switchViewWidget,
     this.dayTextStyle,
     this.dayRadius = 6,
+    this.onTimeChange,
+    this.onTapSwitchDateTime,
     required this.calendarController,
   }) : assert(layout != null ||
             (monthBuilder != null &&
@@ -148,17 +172,22 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
           ListenableBuilder(
             listenable: widget.calendarController,
             builder: (context, __) => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 if (widget.calendarController.currentViewMode ==
                     ViewMode.compactMonth)
-                  monthSelection(widget.calendarController.months),
+                  monthSelection(widget.calendarController.monthsInOption),
                 if (widget.calendarController.currentViewMode ==
                     ViewMode.compactYear)
                   yearSelection(widget.calendarController.years),
-                viewMode(),
+                widget.switchViewWidget != null
+                    ? widget.switchViewWidget!
+                        .call(widget.calendarController.currentViewMode)
+                    : viewMode(),
               ],
             ),
           ),
+          const SizedBox(height: 16),
           AnimatedBuilder(
             animation: widget.calendarController,
             builder: (_, __) {
@@ -175,7 +204,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
                       child: MonthCompactView(
                         month: widget.calendarController.selectedMonth,
                         cleanCalendarController: widget.calendarController,
-                        locale: 'id',
+                        locale: widget.locale,
                         monthBuilder: widget.monthBuilder,
                         calendarCrossAxisSpacing:
                             widget.calendarCrossAxisSpacing,
@@ -195,7 +224,8 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16),
-                        color: Colors.grey.shade200,
+                        color: widget.monthViewCalendarBackground ??
+                            Colors.grey.shade200,
                       ),
                       clipBehavior: Clip.antiAlias,
                       child: DaysWidget(
@@ -228,59 +258,131 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
     );
   }
 
-  Widget monthSelection(List<DateTime> month) => Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(32),
-          border: Border.all(color: const Color(0xff00B7BD)),
-        ),
-        child: DropdownButton<DateTime>(
-          value: widget.calendarController.selectedMonth,
-          items: month.map<DropdownMenuItem<DateTime>>(
-            (DateTime value) {
-              return DropdownMenuItem<DateTime>(
-                value: value,
-                child: Text(
-                  '${DateFormat('MMMM', 'en').format(DateTime(value.year, value.month)).capitalize()} ${DateFormat('yyyy', 'en').format(DateTime(value.year, value.month))}',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xff00B7BD),
-                  ),
+  Widget monthSelection(List<DateTime> month) {
+    if (widget.onTapSwitchDateTime != null) {
+      return GestureDetector(
+        onTap: () async => await widget.onTapSwitchDateTime?.call(),
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(32),
+            border: Border.all(color: const Color(0xff00B7BD)),
+          ),
+          child: ListenableBuilder(
+            listenable: widget.calendarController,
+            builder: (_, __) {
+              final value = widget.calendarController.selectedMonth;
+              return Text(
+                '${DateFormat('MMMM', 'en').format(DateTime(value.year, value.month)).capitalize()} ${DateFormat('yyyy', 'en').format(DateTime(value.year, value.month))}',
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xff00B7BD),
                 ),
               );
             },
-          ).toList(),
-          onChanged: (DateTime? newValue) =>
-              widget.calendarController.selectMonth = newValue!,
+          ),
         ),
       );
+    }
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(32),
+        border: Border.all(color: const Color(0xff00B7BD)),
+      ),
+      child: DropdownButton<DateTime>(
+        dropdownColor: widget.dropdownButtonColor ?? Colors.white,
+        underline: const SizedBox.shrink(),
+        icon: widget.dropdownIconWidget,
+        iconSize: 20,
+        isDense: true,
+        padding: const EdgeInsets.all(4),
+        value: widget.calendarController.selectedMonth,
+        items: month.map<DropdownMenuItem<DateTime>>(
+          (DateTime value) {
+            return DropdownMenuItem<DateTime>(
+              value: value,
+              child: Text(
+                '${DateFormat('MMMM', 'en').format(DateTime(value.year, value.month)).capitalize()} ${DateFormat('yyyy', 'en').format(DateTime(value.year, value.month))}',
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xff00B7BD),
+                ),
+              ),
+            );
+          },
+        ).toList(),
+        onChanged: (DateTime? newValue) {
+          widget.calendarController.selectMonth = newValue!;
+          widget.onTimeChange?.call(widget.calendarController.selectedMonth);
+        },
+      ),
+    );
+  }
 
-  Widget yearSelection(List<DateTime> year) => Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(32),
-          border: Border.all(color: const Color(0xff00B7BD)),
-        ),
-        child: DropdownButton<DateTime>(
-          value: widget.calendarController.selectedYear,
-          items: year.map<DropdownMenuItem<DateTime>>(
-            (DateTime value) {
-              return DropdownMenuItem<DateTime>(
-                value: value,
-                child: Text(
-                  '${value.year}',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xff00B7BD),
-                  ),
+  Widget yearSelection(List<DateTime> year) {
+    if (widget.onTapSwitchDateTime != null) {
+      return GestureDetector(
+        onTap: () async => await widget.onTapSwitchDateTime?.call(),
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(32),
+            border: Border.all(color: const Color(0xff00B7BD)),
+          ),
+          child: ListenableBuilder(
+            listenable: widget.calendarController,
+            builder: (_, __) {
+              final value = widget.calendarController.selectedMonth;
+              return Text(
+                '${value.year}',
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xff00B7BD),
                 ),
               );
             },
-          ).toList(),
-          onChanged: (DateTime? newValue) =>
-              widget.calendarController.selectYear = newValue!,
+          ),
         ),
       );
+    }
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(32),
+        border: Border.all(color: const Color(0xff00B7BD)),
+      ),
+      child: DropdownButton<DateTime>(
+        dropdownColor: widget.dropdownButtonColor ?? Colors.white,
+        underline: const SizedBox.shrink(),
+        icon: widget.dropdownIconWidget,
+        iconSize: 20,
+        isDense: true,
+        padding: const EdgeInsets.all(4),
+        value: widget.calendarController.selectedYear,
+        items: year.map<DropdownMenuItem<DateTime>>(
+          (DateTime value) {
+            return DropdownMenuItem<DateTime>(
+              value: value,
+              child: Text(
+                '${value.year}',
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xff00B7BD),
+                ),
+              ),
+            );
+          },
+        ).toList(),
+        onChanged: (DateTime? newValue) {
+          widget.calendarController.selectYear = newValue!;
+          widget.onTimeChange?.call(widget.calendarController.selectedMonth);
+        },
+      ),
+    );
+  }
 
   Widget viewMode() => Switch(
         value:
@@ -302,9 +404,9 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
           const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
       separatorBuilder: (_, __) =>
           SizedBox(height: widget.spaceBetweenCalendars),
-      itemCount: widget.calendarController.months.length,
+      itemCount: widget.calendarController.monthsInOption.length,
       itemBuilder: (context, index) {
-        final month = widget.calendarController.months[index];
+        final month = widget.calendarController.monthsInOption[index];
 
         return childCollumn(month);
       },
@@ -318,9 +420,9 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
           const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
       separatorBuilder: (_, __) =>
           SizedBox(height: widget.spaceBetweenCalendars),
-      itemCount: widget.calendarController.months.length,
+      itemCount: widget.calendarController.monthsInOption.length,
       itemBuilder: (context, index) {
-        final month = widget.calendarController.months[index];
+        final month = widget.calendarController.monthsInOption[index];
 
         return childCollumn(month);
       },
