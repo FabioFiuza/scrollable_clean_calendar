@@ -54,6 +54,8 @@ class CleanCalendarController extends ChangeNotifier {
 
   final ViewMode viewMode;
 
+  final bool isUtc;
+
   late ViewMode _viewMode;
 
   late int weekdayEnd;
@@ -62,6 +64,10 @@ class CleanCalendarController extends ChangeNotifier {
 
   late DateTime selectedYear;
 
+  /// List month in the options (dropdown menu / bottomsheet)
+  List<DateTime> monthsInOption = [];
+
+  /// List month that show in the UI
   List<DateTime> months = [];
 
   List<DateTime> years = [];
@@ -83,6 +89,7 @@ class CleanCalendarController extends ChangeNotifier {
     this.onPreviousMinDateTapped,
     this.weekdayStart = DateTime.monday,
     this.initialFocusDate,
+    this.isUtc = false,
   })  : assert(weekdayStart <= DateTime.sunday),
         assert(weekdayStart >= DateTime.monday) {
     _viewMode = viewMode;
@@ -91,25 +98,21 @@ class CleanCalendarController extends ChangeNotifier {
     weekdayEnd = x == 0 ? 7 : x;
 
     late DateTime currentDate;
-    if (_viewMode == ViewMode.compactMonth) {
-      currentDate = DateTime(DateTime.now().year, 1);
-    }
-    if (_viewMode == ViewMode.scrollableMonth) {
-      currentDate = DateTime(minDate.year, minDate.month);
-    }
 
-    months.add(currentDate);
-
+    currentDate = DateTime(minDate.year, minDate.month);
+    monthsInOption.add(currentDate);
     while (!(currentDate.year == maxDate.year &&
         currentDate.month == maxDate.month)) {
       currentDate = DateTime(currentDate.year, currentDate.month + 1);
-      months.add(currentDate);
+      monthsInOption.add(currentDate);
     }
 
-    // while (currentDate.month < 12) {
-    //   currentDate = DateTime(currentDate.year, currentDate.month + 1);
-    //   months.add(currentDate);
-    // }
+    currentDate = DateTime(DateTime.now().year, 1);
+    months.add(currentDate);
+    while (currentDate.month < 12) {
+      currentDate = DateTime(currentDate.year, currentDate.month + 1);
+      months.add(currentDate);
+    }
 
     currentDate = DateTime(minDate.year);
     years.add(currentDate);

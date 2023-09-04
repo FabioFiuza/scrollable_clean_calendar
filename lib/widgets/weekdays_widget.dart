@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:scrollable_clean_calendar/controllers/clean_calendar_controller.dart';
 import 'package:scrollable_clean_calendar/utils/enums.dart';
 import 'package:scrollable_clean_calendar/utils/extensions.dart';
@@ -29,6 +28,7 @@ class WeekdaysWidget extends StatelessWidget {
     return GridView.count(
       crossAxisCount: DateTime.daysPerWeek,
       shrinkWrap: true,
+      childAspectRatio: 2,
       physics: const NeverScrollableScrollPhysics(),
       padding: EdgeInsets.zero,
       children: List.generate(DateTime.daysPerWeek, (index) {
