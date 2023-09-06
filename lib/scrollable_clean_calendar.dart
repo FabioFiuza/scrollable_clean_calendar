@@ -273,7 +273,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
             builder: (_, __) {
               final value = widget.calendarController.selectedMonth;
               return Text(
-                '${DateFormat('MMMM', 'en').format(DateTime(value.year, value.month)).capitalize()} ${DateFormat('yyyy', 'en').format(DateTime(value.year, value.month))}',
+                '${DateFormat('MMMM', widget.locale).format(DateTime(value.year, value.month)).capitalize()} ${DateFormat('yyyy', widget.locale).format(DateTime(value.year, value.month))}',
                 style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
@@ -303,7 +303,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
             return DropdownMenuItem<DateTime>(
               value: value,
               child: Text(
-                '${DateFormat('MMMM', 'en').format(DateTime(value.year, value.month)).capitalize()} ${DateFormat('yyyy', 'en').format(DateTime(value.year, value.month))}',
+                '${DateFormat('MMMM', widget.locale).format(DateTime(value.year, value.month)).capitalize()} ${DateFormat('yyyy', widget.locale).format(DateTime(value.year, value.month))}',
                 style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
