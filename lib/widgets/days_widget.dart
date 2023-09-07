@@ -21,6 +21,7 @@ class DaysWidget extends StatelessWidget {
   final Color? dayDisableColor;
   final double radius;
   final TextStyle? textStyle;
+  final double childAspectRatio;
 
   const DaysWidget({
     Key? key,
@@ -37,6 +38,7 @@ class DaysWidget extends StatelessWidget {
     required this.dayDisableColor,
     required this.radius,
     required this.textStyle,
+    required this.childAspectRatio,
   }) : super(key: key);
 
   @override
@@ -67,6 +69,7 @@ class DaysWidget extends StatelessWidget {
       padding: EdgeInsets.zero,
       crossAxisSpacing: calendarCrossAxisSpacing,
       mainAxisSpacing: calendarMainAxisSpacing,
+      childAspectRatio: childAspectRatio,
       shrinkWrap: true,
       children: List.generate(
           DateTime(month.year, month.month + 1, 0).day + start, (index) {

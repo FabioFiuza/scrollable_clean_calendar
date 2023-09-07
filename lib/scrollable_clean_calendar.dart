@@ -39,6 +39,10 @@ class ScrollableCleanCalendar extends StatefulWidget {
   /// The vertical space in the calendar dates
   final double calendarMainAxisSpacing;
 
+  final double childAspectRationDay;
+
+  final double childAspectRatioMonth;
+
   /// The parent padding
   final EdgeInsets? padding;
 
@@ -131,6 +135,8 @@ class ScrollableCleanCalendar extends StatefulWidget {
     this.dayRadius = 6,
     this.onTimeChange,
     this.onTapSwitchDateTime,
+    this.childAspectRationDay = 1.0,
+    this.childAspectRatioMonth = 1.0,
     required this.calendarController,
   }) : assert(layout != null ||
             (monthBuilder != null &&
@@ -209,6 +215,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
                         calendarCrossAxisSpacing:
                             widget.calendarCrossAxisSpacing,
                         calendarMainAxisSpacing: widget.calendarMainAxisSpacing,
+                        childAspectRatio: widget.childAspectRatioMonth,
                       ),
                     ),
                   if (widget.calendarController.currentViewMode ==
@@ -234,6 +241,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
                         calendarCrossAxisSpacing:
                             widget.calendarCrossAxisSpacing,
                         calendarMainAxisSpacing: widget.calendarMainAxisSpacing,
+                        childAspectRatio: widget.childAspectRationDay,
                         layout: widget.layout,
                         dayBuilder: widget.dayBuilder,
                         backgroundColor: widget.dayBackgroundColor,
@@ -464,6 +472,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
                   cleanCalendarController: widget.calendarController,
                   calendarCrossAxisSpacing: widget.calendarCrossAxisSpacing,
                   calendarMainAxisSpacing: widget.calendarMainAxisSpacing,
+                  childAspectRatio: widget.childAspectRationDay,
                   layout: widget.layout,
                   dayBuilder: widget.dayBuilder,
                   backgroundColor: widget.dayBackgroundColor,

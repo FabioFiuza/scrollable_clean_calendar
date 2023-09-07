@@ -15,6 +15,7 @@ class MonthCompactView extends StatelessWidget {
   final TextStyle? textStyle;
   final TextAlign? textAlign;
   final MonthBuilder monthBuilder;
+  final double childAspectRatio;
 
   const MonthCompactView({
     Key? key,
@@ -24,6 +25,7 @@ class MonthCompactView extends StatelessWidget {
     required this.monthBuilder,
     this.textStyle,
     this.textAlign,
+    required this.childAspectRatio,
     required this.cleanCalendarController,
     required this.calendarCrossAxisSpacing,
     required this.calendarMainAxisSpacing,
@@ -32,7 +34,7 @@ class MonthCompactView extends StatelessWidget {
   @override
   Widget build(BuildContext context) => GridView.count(
         crossAxisCount: 4,
-        childAspectRatio: (1 / .6),
+        childAspectRatio: childAspectRatio,
         physics: const NeverScrollableScrollPhysics(),
         addRepaintBoundaries: false,
         padding: EdgeInsets.zero,
