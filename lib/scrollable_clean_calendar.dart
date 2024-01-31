@@ -46,8 +46,14 @@ class ScrollableCleanCalendar extends StatefulWidget {
   /// The label text align of month
   final TextStyle? weekdayTextStyle;
 
+  /// The aspect ratio of weekday items
+  final double? weekdayAspectRatio;
+
   /// The label text style of day
   final TextStyle? dayTextStyle;
+
+  /// The aspect ratio of day items
+  final double? dayAspectRatio;
 
   /// The day selected background color
   final Color? daySelectedBackgroundColor;
@@ -92,11 +98,13 @@ class ScrollableCleanCalendar extends StatefulWidget {
     this.monthTextAlign,
     this.monthTextStyle,
     this.weekdayTextStyle,
+    this.weekdayAspectRatio,
     this.daySelectedBackgroundColor,
     this.dayBackgroundColor,
     this.daySelectedBackgroundColorBetween,
     this.dayDisableBackgroundColor,
     this.dayTextStyle,
+    this.dayAspectRatio,
     this.dayRadius = 6,
     required this.calendarController,
   }) : assert(layout != null ||
@@ -155,6 +163,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
                   layout: widget.layout,
                   weekdayBuilder: widget.weekdayBuilder,
                   textStyle: widget.weekdayTextStyle,
+                  aspectRatio: widget.weekdayAspectRatio,
                 ),
                 AnimatedBuilder(
                   animation: widget.calendarController,
@@ -174,6 +183,7 @@ class _ScrollableCleanCalendarState extends State<ScrollableCleanCalendar> {
                       disableBackgroundColor: widget.dayDisableBackgroundColor,
                       radius: widget.dayRadius,
                       textStyle: widget.dayTextStyle,
+                      aspectRatio: widget.dayAspectRatio,
                     );
                   },
                 )
