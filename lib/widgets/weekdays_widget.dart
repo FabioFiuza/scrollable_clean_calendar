@@ -11,6 +11,7 @@ class WeekdaysWidget extends StatelessWidget {
   final Layout? layout;
   final TextStyle? textStyle;
   final Widget Function(BuildContext context, String weekday)? weekdayBuilder;
+  final double? aspectRatio;
 
   const WeekdaysWidget({
     Key? key,
@@ -20,6 +21,7 @@ class WeekdaysWidget extends StatelessWidget {
     required this.layout,
     required this.weekdayBuilder,
     required this.textStyle,
+    required this.aspectRatio,
   }) : super(key: key);
 
   @override
@@ -29,6 +31,7 @@ class WeekdaysWidget extends StatelessWidget {
     return GridView.count(
       crossAxisCount: DateTime.daysPerWeek,
       shrinkWrap: true,
+      childAspectRatio: aspectRatio ?? 1.0,
       physics: const NeverScrollableScrollPhysics(),
       padding: EdgeInsets.zero,
       children: List.generate(DateTime.daysPerWeek, (index) {
@@ -51,10 +54,10 @@ class WeekdaysWidget extends StatelessWidget {
       child: Text(
         weekday.capitalize(),
         style: textStyle ??
-            Theme.of(context).textTheme.bodyText1!.copyWith(
+            Theme.of(context).textTheme.bodyLarge!.copyWith(
                   color: Theme.of(context)
                       .textTheme
-                      .bodyText1!
+                      .bodyLarge!
                       .color!
                       .withOpacity(.4),
                   fontWeight: FontWeight.bold,
@@ -68,10 +71,10 @@ class WeekdaysWidget extends StatelessWidget {
       child: Text(
         weekday.capitalize(),
         style: textStyle ??
-            Theme.of(context).textTheme.bodyText1!.copyWith(
+            Theme.of(context).textTheme.bodyLarge!.copyWith(
                   color: Theme.of(context)
                       .textTheme
-                      .bodyText1!
+                      .bodyLarge!
                       .color!
                       .withOpacity(.4),
                   fontWeight: FontWeight.bold,
