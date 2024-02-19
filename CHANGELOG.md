@@ -1,3 +1,7 @@
+## [1.5.0] - 2024-02-15
+
+- Add `weekdayAspectRatio` and `dayAspectRatio`, to let the size of the gridview of the days and weeks widget be customized.
+
 ## [1.4.1] - 2023-05-10
 
 - Changed the intl dependency declaration to use the intl version locked by flutter_localizations from sdk which fix incompatibility with updated Flutter 3.10 projects
